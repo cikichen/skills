@@ -1,20 +1,22 @@
-# <skill-name>
+---
+name: template-skill
+description: Replace with description of the skill and when Claude should use it.
+---
 
-## Purpose
+# Insert instructions below
 
-Describe what this skill is for and when it should be triggered.
+## When to Use This Skill
 
-## When to use
+Describe the scenarios where this skill should be activated.
 
-- Trigger condition 1
-- Trigger condition 2
+## Instructions
 
-## How to use
+Provide step-by-step instructions for using this skill.
 
-Provide the expected workflow, constraints, and examples.
+## Examples
 
-## Files
+Include examples of inputs and expected outputs.
 
-- `SKILL.md`: skill definition
-- `README.md`: human-facing introduction
-- `references/`: optional deep references
+## Common Edge Cases
+
+Document any edge cases or special considerations.

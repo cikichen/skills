@@ -13,7 +13,7 @@
 | Skill | 描述 | 文档 |
 |-------|------|------|
 | **python-venv** | Python 虚拟环境管理 - 强制在有依赖的项目中使用 venv | [English](docs/skills/python-venv.md) · [中文](docs/skills/python-venv_CN.md) |
-| **structured-workflow** | 轻量结构化工作流，中文输出和 KISS 原则 | [English](docs/skills/structured-workflow.md) |
+| **structured-workflow** | 轻量结构化工作流，中文输出和 KISS 原则 | [中文](docs/skills/structured-workflow.md) |
 | **wsl-shell-reliability** | Windows 可靠性优先的 Shell 选择（WSL/PowerShell） | [English](docs/skills/wsl-shell-reliability.md) · [中文](docs/skills/wsl-shell-reliability_CN.md) |
 
 ## 快速开始

@@ -40,32 +40,6 @@ Skills 会被兼容的 AI 助手自动加载。每个 skill 包含：
 - `SKILL.md` - AI agent 的核心指令文件
 - `references/` - 支持文档和模式
 
-## 目录结构
-
-```text
-skills/
-  README.md                    # 本文件 - 概览和导航
-  README_CN.md                 # 中文版本
-  LICENSE                      # MIT 许可证
-  .gitignore
-  docs/
-    SKILL_REQUIREMENTS.md      # Skill 结构要求
-    skills/                    # 详细的 skill 文档
-      python-venv.md
-      python-venv_CN.md
-      structured-workflow.md
-      wsl-shell-reliability.md
-      wsl-shell-reliability_CN.md
-  spec/
-    agent-skills-spec.md       # Skill 规范
-  template/
-    SKILL.md                   # 新 skill 的模板
-  skills/
-    <skill-name>/
-      SKILL.md                 # AI agent 的核心指令
-      references/              # 支持文档
-```
-
 ## 添加新 Skill
 
 1. 在 `skills/` 下创建 kebab-case 命名的新目录

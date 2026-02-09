@@ -41,33 +41,6 @@ Skills are automatically loaded by compatible AI assistants. Each skill contains
 - `references/` - Supporting documentation and patterns
 
 ---
-
-## Repository Structure
-
-```text
-skills/
-  README.md                    # This file - overview and navigation
-  README_CN.md                 # Chinese version
-  LICENSE                      # MIT license
-  .gitignore
-  docs/
-    SKILL_REQUIREMENTS.md      # Skill structure requirements
-    skills/                    # Detailed skill documentation
-      python-venv.md
-      python-venv_CN.md
-      structured-workflow.md
-      wsl-shell-reliability.md
-      wsl-shell-reliability_CN.md
-  spec/
-    agent-skills-spec.md       # Skill specification
-  template/
-    SKILL.md                   # Template for new skills
-  skills/
-    <skill-name>/
-      SKILL.md                 # Core instruction for AI agents
-      references/              # Supporting documentation
-```
-
 ## Adding a New Skill
 
 1. Create a new directory under `skills/` with a kebab-case name

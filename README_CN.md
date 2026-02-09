@@ -43,7 +43,7 @@ Skills 会被兼容的 AI 助手自动加载。每个 skill 包含：
 ## 添加新 Skill
 
 1. 在 `skills/` 下创建 kebab-case 命名的新目录
-2. 添加 `SKILL.md`，包含 AI agent 的核心指令
+2. 添加 `SKILL.md`，包含 AI agent 的核心指令（参考 [template/SKILL_TEMPLATE.md](template/SKILL_TEMPLATE.md)）
 3. （可选）添加 `references/` 目录存放支持文档
 4. 在 `docs/skills/<skill-name>.md` 创建文档
 5. 更新本 README，在上面的表格中添加新 skill

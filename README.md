@@ -44,7 +44,7 @@ Skills are automatically loaded by compatible AI assistants. Each skill contains
 ## Adding a New Skill
 
 1. Create a new directory under `skills/` with a kebab-case name
-2. Add `SKILL.md` with core instructions for AI agents
+2. Add `SKILL.md` with core instructions for AI agents (see [template/SKILL_TEMPLATE.md](template/SKILL_TEMPLATE.md))
 3. (Optional) Add `references/` directory for supporting docs
 4. Create documentation in `docs/skills/<skill-name>.md`
 5. Update this README to include the new skill in the table above

@@ -6,40 +6,40 @@ This document defines the recommended **required** and **optional** files for ea
 
 Assume a skill project path is `skills/<skill-name>/`.
 
-- `README.md`
-  - English intro, purpose, usage, examples.
+- `SKILL.md`
+  - Core skill instruction file for AI agents.
 - `LICENSE`
   - MIT recommended.
-- `<skill-folder>/SKILL.md`
-  - Core skill instruction file.
-
-## 2) Strongly Recommended
-
-- `README_CN.md`
-  - Chinese documentation for local team usage.
-- `<skill-folder>/references/`
+- `references/` (optional but recommended)
   - Supporting docs such as patterns, troubleshooting, scenarios.
-- `CHANGELOG.md`
-  - Track notable updates.
-- `CONTRIBUTING.md`
-  - Contribution rules.
 
-## 3) Optional but Useful
+## 2) Documentation Structure
+
+**All skill documentation (README files) is centralized in `docs/skills/`:**
+
+- `docs/skills/<skill-name>.md` - English documentation
+- `docs/skills/<skill-name>_CN.md` - Chinese documentation (optional)
+
+**Top-level README files (`README.md` and `README_CN.md`) serve as the unified entry point** for all skills.
+
+## 3) Optional but Useful (per skill)
 
 - `.gitignore`
-- `examples/`
-- `tests/` or validation scripts
-- `meta/` or manifest file (`skill.json`, etc.)
+- `CHANGELOG.md` - Track notable updates
+- `CONTRIBUTING.md` - Contribution rules
+- `examples/` - Usage examples
+- `tests/` - Validation scripts
+- `meta/` - Manifest file (`skill.json`, etc.)
 
 ## 4) Naming Conventions
 
-- Project directory: `kebab-case` (e.g. `wsl-terminal-skill`)
+- Project directory: `kebab-case` (e.g. `wsl-shell-reliability`)
 - Skill folder name should reflect skill identity (e.g. `python-venv`, `structured-workflow`)
-- Docs filenames:
-  - `README.md` (EN)
-  - `README_CN.md` (ZH)
+- Documentation files in `docs/skills/`:
+  - `<skill-name>.md` (EN)
+  - `<skill-name>_CN.md` (ZH)
 
-## 5) Current Imported Projects Check
+## 5) Current Structure
 
 Imported projects in this monorepo:
 
@@ -47,19 +47,16 @@ Imported projects in this monorepo:
 2. `skills/structured-workflow`
 3. `skills/wsl-shell-reliability`
 
-All three currently include:
+All three follow the new structure:
 
-- `README.md`
-- `LICENSE`
-- skill core folder with `SKILL.md`
+- Each skill directory contains only skill-specific files (SKILL.md, LICENSE, references/)
+- All README documentation moved to `docs/skills/`
+- Top-level README.md and README_CN.md provide comprehensive overview
 
-Partial coverage:
+## 6) Benefits of This Structure
 
-- `README_CN.md`: present in project 1 and 3, missing in project 2
-- `CHANGELOG.md` / `CONTRIBUTING.md`: present in project 3 only
-
-## 6) Suggested Normalization Actions
-
-- Add `README_CN.md` to `skills/structured-workflow` (if bilingual docs required)
-- Decide whether all projects should include `CHANGELOG.md` + `CONTRIBUTING.md`
-- Optionally define a unified manifest schema for discovery
+- **Cleaner skill directories**: Only skill-specific files (SKILL.md, references/)
+- **Centralized documentation**: All README files in one place (`docs/skills/`)
+- **Unified entry point**: Top-level README serves as comprehensive guide
+- **Easier maintenance**: Update documentation in one location
+- **Better discoverability**: Users find all information in top-level README

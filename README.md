@@ -230,21 +230,28 @@ When falling back, report:
 
 ```text
 skills/
-  README.md
-  README_CN.md
+  README.md                    # Unified entry point (English)
+  README_CN.md                 # Unified entry point (Chinese)
   LICENSE
   docs/
-    SKILL_REQUIREMENTS.md
+    SKILL_REQUIREMENTS.md      # Skill structure requirements
+    skills/                    # Centralized skill documentation
+      python-venv.md
+      python-venv_CN.md
+      structured-workflow.md
+      wsl-shell-reliability.md
+      wsl-shell-reliability_CN.md
   spec/
     agent-skills-spec.md
   template/
     SKILL.md
   skills/
     <skill-name>/
-      SKILL.md
-      references/
-      README.md
+      SKILL.md                 # Core skill instruction for AI agents
       LICENSE
+      references/              # Supporting documentation
+      CHANGELOG.md             # (optional)
+      CONTRIBUTING.md          # (optional)
 ```
 
 ---

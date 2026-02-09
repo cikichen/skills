@@ -236,21 +236,28 @@
 
 ```text
 skills/
-  README.md
-  README_CN.md
+  README.md                    # 统一入口（英文）
+  README_CN.md                 # 统一入口（中文）
   LICENSE
   docs/
-    SKILL_REQUIREMENTS.md
+    SKILL_REQUIREMENTS.md      # Skill 结构要求
+    skills/                    # 集中式 skill 文档
+      python-venv.md
+      python-venv_CN.md
+      structured-workflow.md
+      wsl-shell-reliability.md
+      wsl-shell-reliability_CN.md
   spec/
     agent-skills-spec.md
   template/
     SKILL.md
   skills/
     <skill-name>/
-      SKILL.md
-      references/
-      README.md
+      SKILL.md                 # AI agent 核心指令文件
       LICENSE
+      references/              # 支持文档
+      CHANGELOG.md             # （可选）
+      CONTRIBUTING.md          # （可选）
 ```
 
 ---

@@ -238,7 +238,8 @@
 skills/
   README.md                    # 统一入口（英文）
   README_CN.md                 # 统一入口（中文）
-  LICENSE
+  LICENSE                      # 整个仓库的 MIT 许可证
+  .gitignore
   docs/
     SKILL_REQUIREMENTS.md      # Skill 结构要求
     skills/                    # 集中式 skill 文档
@@ -254,10 +255,7 @@ skills/
   skills/
     <skill-name>/
       SKILL.md                 # AI agent 核心指令文件
-      LICENSE
       references/              # 支持文档
-      CHANGELOG.md             # （可选）
-      CONTRIBUTING.md          # （可选）
 ```
 
 ---

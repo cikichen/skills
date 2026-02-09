@@ -8,10 +8,10 @@ Assume a skill project path is `skills/<skill-name>/`.
 
 - `SKILL.md`
   - Core skill instruction file for AI agents.
-- `LICENSE`
-  - MIT recommended.
 - `references/` (optional but recommended)
   - Supporting docs such as patterns, troubleshooting, scenarios.
+
+**Note:** LICENSE, CHANGELOG.md, CONTRIBUTING.md, and .gitignore are managed at the repository level only.
 
 ## 2) Documentation Structure
 
@@ -24,9 +24,6 @@ Assume a skill project path is `skills/<skill-name>/`.
 
 ## 3) Optional but Useful (per skill)
 
-- `.gitignore`
-- `CHANGELOG.md` - Track notable updates
-- `CONTRIBUTING.md` - Contribution rules
 - `examples/` - Usage examples
 - `tests/` - Validation scripts
 - `meta/` - Manifest file (`skill.json`, etc.)
@@ -49,14 +46,16 @@ Imported projects in this monorepo:
 
 All three follow the new structure:
 
-- Each skill directory contains only skill-specific files (SKILL.md, LICENSE, references/)
+- Each skill directory contains only: `SKILL.md` and `references/`
 - All README documentation moved to `docs/skills/`
 - Top-level README.md and README_CN.md provide comprehensive overview
+- LICENSE, .gitignore managed at repository level
 
 ## 6) Benefits of This Structure
 
-- **Cleaner skill directories**: Only skill-specific files (SKILL.md, references/)
+- **Minimal skill directories**: Only SKILL.md and references/
 - **Centralized documentation**: All README files in one place (`docs/skills/`)
 - **Unified entry point**: Top-level README serves as comprehensive guide
 - **Easier maintenance**: Update documentation in one location
 - **Better discoverability**: Users find all information in top-level README
+- **Single source of truth**: LICENSE, CHANGELOG, CONTRIBUTING at repository level

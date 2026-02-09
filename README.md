@@ -232,7 +232,8 @@ When falling back, report:
 skills/
   README.md                    # Unified entry point (English)
   README_CN.md                 # Unified entry point (Chinese)
-  LICENSE
+  LICENSE                      # MIT license for entire repository
+  .gitignore
   docs/
     SKILL_REQUIREMENTS.md      # Skill structure requirements
     skills/                    # Centralized skill documentation
@@ -248,10 +249,7 @@ skills/
   skills/
     <skill-name>/
       SKILL.md                 # Core skill instruction for AI agents
-      LICENSE
       references/              # Supporting documentation
-      CHANGELOG.md             # (optional)
-      CONTRIBUTING.md          # (optional)
 ```
 
 ---

@@ -8,9 +8,9 @@ This repository consolidates multiple standalone skill projects into one place f
 
 Current imported projects:
 
-- `skills/skill-python-venv`
-- `skills/structured-workflow-skill`
-- `skills/wsl-terminal-skill`
+- `skills/python-venv`
+- `skills/structured-workflow`
+- `skills/wsl-shell-reliability`
 
 ## Repository Structure
 
@@ -21,10 +21,16 @@ skills/
   LICENSE
   docs/
     SKILL_REQUIREMENTS.md
+  spec/
+    agent-skills-spec.md
+  template/
+    SKILL.md
   skills/
-    <skill-project-a>/
-    <skill-project-b>/
-    <skill-project-c>/
+    <skill-name>/
+      SKILL.md
+      references/
+      README.md
+      LICENSE
 ```
 
 ## Add a New Skill Project

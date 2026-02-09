@@ -4,7 +4,7 @@ This document defines the recommended **required** and **optional** files for ea
 
 ## 1) Minimum Required (per skill project)
 
-Assume a skill project path is `skills/<project-name>/`.
+Assume a skill project path is `skills/<skill-name>/`.
 
 - `README.md`
   - English intro, purpose, usage, examples.
@@ -43,9 +43,9 @@ Assume a skill project path is `skills/<project-name>/`.
 
 Imported projects in this monorepo:
 
-1. `skills/skill-python-venv`
-2. `skills/structured-workflow-skill`
-3. `skills/wsl-terminal-skill`
+1. `skills/python-venv`
+2. `skills/structured-workflow`
+3. `skills/wsl-shell-reliability`
 
 All three currently include:
 
@@ -60,6 +60,6 @@ Partial coverage:
 
 ## 6) Suggested Normalization Actions
 
-- Add `README_CN.md` to `structured-workflow-skill`
+- Add `README_CN.md` to `skills/structured-workflow` (if bilingual docs required)
 - Decide whether all projects should include `CHANGELOG.md` + `CONTRIBUTING.md`
 - Optionally define a unified manifest schema for discovery

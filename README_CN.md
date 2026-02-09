@@ -8,9 +8,9 @@
 
 当前已纳入的项目：
 
-- `skills/skill-python-venv`
-- `skills/structured-workflow-skill`
-- `skills/wsl-terminal-skill`
+- `skills/python-venv`
+- `skills/structured-workflow`
+- `skills/wsl-shell-reliability`
 
 ## 目录结构
 
@@ -21,10 +21,16 @@ skills/
   LICENSE
   docs/
     SKILL_REQUIREMENTS.md
+  spec/
+    agent-skills-spec.md
+  template/
+    SKILL.md
   skills/
-    <skill-project-a>/
-    <skill-project-b>/
-    <skill-project-c>/
+    <skill-name>/
+      SKILL.md
+      references/
+      README.md
+      LICENSE
 ```
 
 ## 新增 Skill 项目建议流程

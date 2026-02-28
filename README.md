@@ -15,6 +15,8 @@ This repository consolidates multiple standalone skill projects into one place f
 | **python-venv** | Python virtual environment management - enforces venv usage for projects with dependencies | [English](docs/skills/python-venv.md) · [中文](docs/skills/python-venv_CN.md) |
 | **structured-workflow** | Lightweight structured workflow with Chinese output and KISS principles | [中文](docs/skills/structured-workflow.md) |
 | **wsl-shell-reliability** | Reliability-first shell selection for Windows (WSL/PowerShell) | [English](docs/skills/wsl-shell-reliability.md) · [中文](docs/skills/wsl-shell-reliability_CN.md) |
+| **yoebao-bazi** | Bazi charting tool using Yoebao API with four pillars and decadal fortune output | N/A |
+| **bazi-mingli** | Comprehensive Bazi interpretation skill with built-in calculator, ethics guide, and references | N/A |
 
 ## Quick Start
 

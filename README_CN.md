@@ -15,6 +15,8 @@
 | **python-venv** | Python 虚拟环境管理 - 强制在有依赖的项目中使用 venv | [English](docs/skills/python-venv.md) · [中文](docs/skills/python-venv_CN.md) |
 | **structured-workflow** | 轻量结构化工作流，中文输出和 KISS 原则 | [中文](docs/skills/structured-workflow.md) |
 | **wsl-shell-reliability** | Windows 可靠性优先的 Shell 选择（WSL/PowerShell） | [English](docs/skills/wsl-shell-reliability.md) · [中文](docs/skills/wsl-shell-reliability_CN.md) |
+| **yoebao-bazi** | 基于 Yoebao API 的八字排盘工具，可输出四柱与大运 | 暂无 |
+| **bazi-mingli** | 完整八字命理解读 skill，内置排盘脚本、伦理规范与参考资料 | 暂无 |
 
 ## 快速开始
 

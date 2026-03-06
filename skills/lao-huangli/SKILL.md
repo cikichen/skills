@@ -79,6 +79,7 @@ metadata:
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile market-folk-v1 --format calendar
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile xiejibianfang-v1 --format json
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --format calendar
+python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
 ```
 
 脚本产出保证：
@@ -106,8 +107,17 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 当前实现状态：
 
 - profile/ruleset 目录结构已建立
-- `meta` 已输出 `profileId`、`profileLabel`、边界信息
-- 规则层目前仅完成来源元数据约束与占位，不输出真实宜忌
+- `meta` 已输出 `profileId`、`profileLabel`、边界信息、`ruleLayer`、`overlayRuleset`
+- `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
+- `bazi-v1` 默认只输出 `bazi-core`，如指定 `--overlay-ruleset` 则输出 hybrid 黄历层
+- `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
+
+规则来源约束：
+
+- 每条规则文件必须带 `sourceLevel`
+- 每条规则文件必须带 `sourceRef`
+- `xiejibianfang-v1` 目前使用 `L1-primary`
+- `market-folk-v1` 目前使用 `L2-derived-documented` / `L3-market-observed` 混合标记
 
 ## 输出格式（仿挂历，默认详细版）
 

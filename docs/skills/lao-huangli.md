@@ -46,6 +46,7 @@ Run script first for reproducible fields, then enrich with ruleset fields:
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile market-folk-v1 --format calendar
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile xiejibianfang-v1 --format json
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --format calendar
+python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
 ```
 
 - Script-computable: lunar date, ganzhi pillars, solar-term window, 12-hour ganzhi slots
@@ -64,8 +65,17 @@ Compatibility note:
 
 Current implementation status:
 
-- The script already emits `meta.profileId`, `profileLabel`, and boundary metadata
-- The rules layer currently enforces source metadata and uses explicit placeholders until actual rules are implemented
+- The script emits `meta.profileId`, `profileLabel`, boundary metadata, `ruleLayer`, and `overlayRuleset`
+- `xiejibianfang-v1` and `market-folk-v1` now emit minimal `daily` and `decision` outputs
+- `bazi-v1` defaults to `bazi-core`; `--overlay-ruleset` enables hybrid almanac output
+- `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`
+
+Rule provenance constraints:
+
+- Every rule file must carry `sourceLevel`
+- Every rule file must carry `sourceRef`
+- `xiejibianfang-v1` currently uses `L1-primary`
+- `market-folk-v1` currently mixes `L2-derived-documented` and `L3-market-observed`
 
 ## 输出建议
 

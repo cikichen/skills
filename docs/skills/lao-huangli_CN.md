@@ -46,6 +46,7 @@ skills/lao-huangli/
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile market-folk-v1 --format calendar
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile xiejibianfang-v1 --format json
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --format calendar
+python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
 ```
 
 - 脚本可复算：农历、干支、节气区间、12时辰干支
@@ -64,8 +65,17 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 当前实现状态：
 
-- 脚本已输出 `meta.profileId`、`profileLabel` 和边界字段
-- 规则层目前只完成来源元数据约束与占位，尚未输出真实宜忌
+- 脚本已输出 `meta.profileId`、`profileLabel`、边界字段、`ruleLayer`、`overlayRuleset`
+- `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
+- `bazi-v1` 默认只输出 `bazi-core`；显式传入 `--overlay-ruleset` 后输出 hybrid 黄历层
+- `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
+
+规则来源约束：
+
+- 每条规则文件必须带 `sourceLevel`
+- 每条规则文件必须带 `sourceRef`
+- `xiejibianfang-v1` 当前使用 `L1-primary`
+- `market-folk-v1` 当前混合 `L2-derived-documented` 与 `L3-market-observed`
 
 ## 输出建议
 

@@ -280,6 +280,7 @@ JIEQI_DATES = {
 CHINESE_WEEKDAY = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
 ROOT = Path(__file__).resolve().parents[1]
+RULES_DIR = ROOT / "rules"
 PROFILES_DIR = ROOT / "rules" / "profiles"
 LEGACY_MODE_TO_PROFILE = {"market": "market-folk-v1", "bazi": "bazi-v1"}
 
@@ -288,6 +289,13 @@ def load_profile(profile_id: str) -> Dict[str, object]:
     path = PROFILES_DIR / f"{profile_id}.json"
     if not path.exists():
         raise ValueError(f"unsupported profile={profile_id}")
+    return json.loads(path.read_text())
+
+
+def load_ruleset_items(profile_id: str, filename: str) -> List[Dict[str, object]]:
+    path = RULES_DIR / profile_id / f"{filename}.json"
+    if not path.exists():
+        return []
     return json.loads(path.read_text())
 
 
@@ -432,6 +440,17 @@ def get_hour_ganzhi(day_gan: int, hour: int) -> Tuple[int, int]:
     return (start + hour_zhi) % 10, hour_zhi
 
 
+def compute_jianchu(profile_id: str, month_branch: str, day_branch: str) -> str:
+    rules = load_ruleset_items(profile_id, "jianchu")
+    if not rules:
+        return "待规则库补齐"
+
+    cycle = rules[0]["cycle"]
+    month_index = DIZHI.index(month_branch)
+    day_index = DIZHI.index(day_branch)
+    return cycle[(day_index - month_index) % 12]
+
+
 def _get_terms_for_date(month: int, day: int) -> Dict[str, str]:
     terms = JIEQI_DATES.get(month, [])
     if not terms:
@@ -567,6 +586,9 @@ def calculate(inp: HuangliInput) -> Dict:
             "text": f"{TIANGAN[yg]}{DIZHI[yz]}年 {TIANGAN[mg]}{DIZHI[mz]}月 {TIANGAN[dg]}{DIZHI[dz]}日 {TIANGAN[hg]}{DIZHI[hz]}时",
         },
         "solar_terms": _get_terms_for_date(logical_dt.month, logical_dt.day),
+        "daily": {
+            "jianchu": compute_jianchu(profile_cfg["id"], DIZHI[mz], DIZHI[dz])
+        },
         "hour_slots": hour_slots,
         "meta": {
             "profileId": profile_cfg["id"],

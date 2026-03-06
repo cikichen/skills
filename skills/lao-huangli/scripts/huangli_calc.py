@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 TIANGAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -299,6 +300,33 @@ def load_ruleset_items(profile_id: str, filename: str) -> List[Dict[str, object]
     return json.loads(path.read_text())
 
 
+def get_ruleset_source_metadata(ruleset_id: Optional[str]) -> Dict[str, object]:
+    if not ruleset_id:
+        return {"ruleSourceLevel": "none", "sourceRefs": []}
+
+    ruleset_dir = RULES_DIR / ruleset_id
+    if not ruleset_dir.exists():
+        return {"ruleSourceLevel": "none", "sourceRefs": []}
+
+    source_levels = OrderedDict()
+    source_refs = OrderedDict()
+    for path in sorted(ruleset_dir.glob("*.json")):
+        data = json.loads(path.read_text())
+        if not isinstance(data, list):
+            continue
+        for item in data:
+            level = item.get("sourceLevel")
+            if level:
+                source_levels[level] = True
+            for ref in item.get("sourceRef", []):
+                key = (ref.get("work"), ref.get("location"), ref.get("url"))
+                if key not in source_refs:
+                    source_refs[key] = ref
+
+    level_text = ",".join(source_levels.keys()) if source_levels else "none"
+    return {"ruleSourceLevel": level_text, "sourceRefs": list(source_refs.values())}
+
+
 def _year_days(year_info: int) -> int:
     days = 29 * 12
     leap_month = year_info & 0xF
@@ -476,6 +504,27 @@ def evaluate_rules(profile_id: str, rule_context: Dict[str, str]) -> Dict[str, L
     return decision
 
 
+def get_active_ruleset(profile_id: str, overlay_ruleset: Optional[str]) -> Optional[str]:
+    if profile_id == "bazi-v1":
+        return overlay_ruleset
+    return profile_id
+
+
+def get_capabilities(profile_id: str, ruleset_id: Optional[str], is_hybrid: bool) -> Dict[str, bool]:
+    has_rule_layer = ruleset_id is not None
+    return {
+        "calendarCore": True,
+        "ganzhi": True,
+        "solarTerms": True,
+        "jianchu": has_rule_layer,
+        "yellowBlackDao": has_rule_layer,
+        "dutyGod": False,
+        "yiJi": has_rule_layer,
+        "sourceTrace": has_rule_layer,
+        "isHybrid": is_hybrid,
+    }
+
+
 def _get_terms_for_date(month: int, day: int) -> Dict[str, str]:
     terms = JIEQI_DATES.get(month, [])
     if not terms:
@@ -507,10 +556,27 @@ def _render_calendar_block(data: Dict) -> str:
     date = data["date"]
     daily = data.get("daily", {})
     decision = data.get("decision", {})
-    yi_text = "  ".join(decision.get("yi", [])) or "待规则库补齐"
-    ji_text = "  ".join(decision.get("ji", [])) or "待规则库补齐"
-    jianchu_text = daily.get("jianchu", "待规则库补齐")
-    yellow_black_text = daily.get("yellowBlackDao", "待规则库补齐")
+    capabilities = data.get("capabilities", {})
+    provenance = data.get("provenance", {})
+    if capabilities.get("yiJi", True):
+        yi_text = "  ".join(decision.get("yi", [])) or "待规则库补齐"
+        ji_text = "  ".join(decision.get("ji", [])) or "待规则库补齐"
+        jianchu_text = daily.get("jianchu", "待规则库补齐")
+        yellow_black_text = daily.get("yellowBlackDao", "待规则库补齐")
+    else:
+        yi_text = "未启用（bazi-core）"
+        ji_text = "未启用（bazi-core）"
+        jianchu_text = "未启用"
+        yellow_black_text = "未启用"
+
+    if provenance.get("ruleLayer"):
+        rule_note = (
+            f"规则层：{provenance['ruleLayer']} / "
+            f"sourceLevel={provenance['ruleSourceLevel']} / "
+            f"isHybrid={provenance['isHybrid']}"
+        )
+    else:
+        rule_note = "规则层：未启用（bazi-core，仅输出历法核心）"
     lines = [
         "┌────────────────────────────────────────────────────────────┐",
         f"│ {date['date_cn']}  {date['weekday_cn']:<44}│",
@@ -535,16 +601,14 @@ def _render_calendar_block(data: Dict) -> str:
     lines.extend(
         [
             "└────────────────────────────────────────────────────────────┘",
-            (
-                "说明：农历/干支/节气由脚本可复算；宜忌/神煞为 ruleset 字段，"
-                f"当前 {data['meta']['rulesetVersion']} 未加载规则库。"
-            ),
+            f"说明：农历/干支/节气由脚本可复算；{rule_note}",
             (
                 f"边界：yearBoundary={data['meta']['yearBoundary']} / "
                 f"dayBoundary={data['meta']['dayBoundary']} / "
                 f"input={data['date']['input_iso']} / "
                 f"effectiveAt={data['date']['effective_iso']} / "
-                f"logicalDate={data['date']['logical_date_iso']}"
+                f"logicalDate={data['date']['logical_date_iso']} / "
+                f"overlayRuleset={data['provenance']['overlayRuleset']}"
             ),
         ]
     )
@@ -558,6 +622,7 @@ class HuangliInput:
     day: int
     hour: int
     profile: str
+    overlay_ruleset: Optional[str] = None
 
 
 def calculate(inp: HuangliInput) -> Dict:
@@ -582,13 +647,20 @@ def calculate(inp: HuangliInput) -> Dict:
     hg, hz = get_hour_ganzhi(dg, inp.hour)
     month_branch = DIZHI[mz]
     day_branch = DIZHI[dz]
-    daily = {
-        "jianchu": compute_jianchu(profile_cfg["id"], month_branch, day_branch),
-        "yellowBlackDao": compute_yellow_black_dao(
-            profile_cfg["id"], month_branch, day_branch
-        ),
-    }
-    decision = evaluate_rules(profile_cfg["id"], daily)
+    is_hybrid = profile_cfg["id"] == "bazi-v1" and inp.overlay_ruleset is not None
+    ruleset_id = get_active_ruleset(profile_cfg["id"], inp.overlay_ruleset)
+    if ruleset_id:
+        daily = {
+            "jianchu": compute_jianchu(ruleset_id, month_branch, day_branch),
+            "yellowBlackDao": compute_yellow_black_dao(ruleset_id, month_branch, day_branch),
+        }
+        decision = evaluate_rules(ruleset_id, daily)
+    else:
+        daily = {}
+        decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
+
+    source_metadata = get_ruleset_source_metadata(ruleset_id)
+    capabilities = get_capabilities(profile_cfg["id"], ruleset_id, is_hybrid)
 
     hour_slots: List[Dict[str, str]] = []
     for idx, (name, hour_range) in enumerate(SHICHEN_SEGMENTS):
@@ -628,6 +700,15 @@ def calculate(inp: HuangliInput) -> Dict:
         "solar_terms": _get_terms_for_date(logical_dt.month, logical_dt.day),
         "daily": daily,
         "decision": decision,
+        "capabilities": capabilities,
+        "provenance": {
+            "calendarCore": "algorithmic",
+            "ruleLayer": ruleset_id,
+            "ruleSourceLevel": source_metadata["ruleSourceLevel"],
+            "sourceRefs": source_metadata["sourceRefs"],
+            "isHybrid": is_hybrid,
+            "overlayRuleset": inp.overlay_ruleset,
+        },
         "hour_slots": hour_slots,
         "meta": {
             "profileId": profile_cfg["id"],
@@ -645,6 +726,8 @@ def calculate(inp: HuangliInput) -> Dict:
             "dayBoundary": profile_cfg["dayBoundary"],
             "timezone": "Asia/Shanghai",
             "rulesetVersion": "zh-traditional-v1",
+            "ruleLayer": ruleset_id,
+            "overlayRuleset": inp.overlay_ruleset,
             "notes": [
                 "lunar/ganzhi/terms are algorithmic outputs",
                 "yi-ji and shensha require external rule tables",
@@ -665,6 +748,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("hour", type=int, nargs="?", default=12)
     parser.add_argument("--profile")
     parser.add_argument("--mode", choices=["market", "bazi"], default="market")
+    parser.add_argument("--overlay-ruleset")
     parser.add_argument("--format", choices=["json", "calendar"], default="calendar")
     return parser.parse_args()
 
@@ -673,7 +757,14 @@ def main() -> None:
     args = parse_args()
     profile_id = args.profile or LEGACY_MODE_TO_PROFILE[args.mode]
     result = calculate(
-        HuangliInput(args.year, args.month, args.day, args.hour, profile_id)
+        HuangliInput(
+            args.year,
+            args.month,
+            args.day,
+            args.hour,
+            profile_id,
+            args.overlay_ruleset,
+        )
     )
     if args.format == "json":
         print(json.dumps(result, ensure_ascii=False, indent=2))

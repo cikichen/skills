@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -10,9 +11,21 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 
+ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from lao_huangli.calendar_core import CalendarCoreInput, build_calendar_context
+from lao_huangli.rule_engine import evaluate_rule_layer
+
+
 TIANGAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
 DIZHI = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
 SHENGXIAO = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"]
+
+# GB/T 33661-2017 指定 1949-10-01 对应甲子日。
+DAY_GANZHI_BASE_JDN = 2433191
 
 SHICHEN_SEGMENTS = [
     ("子", "23:00-00:59"),
@@ -280,7 +293,6 @@ JIEQI_DATES = {
 
 CHINESE_WEEKDAY = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
-ROOT = Path(__file__).resolve().parents[1]
 RULES_DIR = ROOT / "rules"
 PROFILES_DIR = ROOT / "rules" / "profiles"
 LEGACY_MODE_TO_PROFILE = {"market": "market-folk-v1", "bazi": "bazi-v1"}
@@ -457,7 +469,7 @@ def get_day_ganzhi(year: int, month: int, day: int) -> Tuple[int, int]:
     y = year + 4800 - a
     m = month + 12 * a - 3
     jd = day + (153 * m + 2) // 5 + 365 * y + y // 4 - y // 100 + y // 400 - 32045
-    offset = jd - 2445701
+    offset = jd - DAY_GANZHI_BASE_JDN
     return offset % 10, offset % 12
 
 
@@ -627,89 +639,31 @@ class HuangliInput:
 
 def calculate(inp: HuangliInput) -> Dict:
     profile_cfg = load_profile(inp.profile)
-    input_dt = datetime(inp.year, inp.month, inp.day, inp.hour)
-    logical_dt = _apply_day_boundary(input_dt, profile_cfg["dayBoundary"])
-    boundary_shifted = logical_dt.date() != input_dt.date()
-
-    lunar_year, lunar_month, lunar_day, is_leap = gregorian_to_lunar(
-        logical_dt.year, logical_dt.month, logical_dt.day
-    )
-
-    yg, yz = get_year_ganzhi(
-        logical_dt.year,
-        logical_dt.month,
-        logical_dt.day,
-        profile_cfg["yearBoundary"],
-    )
-    jq_month = get_jieqi_month(logical_dt.month, logical_dt.day)
-    mg, mz = get_month_ganzhi(yg, jq_month)
-    dg, dz = get_day_ganzhi(logical_dt.year, logical_dt.month, logical_dt.day)
-    hg, hz = get_hour_ganzhi(dg, inp.hour)
-    month_branch = DIZHI[mz]
-    day_branch = DIZHI[dz]
-    is_hybrid = profile_cfg["id"] == "bazi-v1" and inp.overlay_ruleset is not None
-    ruleset_id = get_active_ruleset(profile_cfg["id"], inp.overlay_ruleset)
-    if ruleset_id:
-        daily = {
-            "jianchu": compute_jianchu(ruleset_id, month_branch, day_branch),
-            "yellowBlackDao": compute_yellow_black_dao(ruleset_id, month_branch, day_branch),
-        }
-        decision = evaluate_rules(ruleset_id, daily)
-    else:
-        daily = {}
-        decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
-
-    source_metadata = get_ruleset_source_metadata(ruleset_id)
-    capabilities = get_capabilities(profile_cfg["id"], ruleset_id, is_hybrid)
-
-    hour_slots: List[Dict[str, str]] = []
-    for idx, (name, hour_range) in enumerate(SHICHEN_SEGMENTS):
-        hgan = (hg - hz + idx) % 10
-        hour_slots.append(
-            {
-                "name": name,
-                "range": hour_range,
-                "ganzhi": f"{TIANGAN[hgan]}{DIZHI[idx]}",
-            }
+    calendar_context = build_calendar_context(
+        CalendarCoreInput(
+            year=inp.year,
+            month=inp.month,
+            day=inp.day,
+            hour=inp.hour,
+            year_boundary=profile_cfg["yearBoundary"],
+            day_boundary=profile_cfg["dayBoundary"],
         )
+    )
+    indices = calendar_context.pop("indices")
+    yg = indices["year_gan"]
+    yz = indices["year_zhi"]
+    rule_layer = evaluate_rule_layer(
+        profile_id=profile_cfg["id"],
+        overlay_ruleset=inp.overlay_ruleset,
+        calendar_context=calendar_context,
+    )
 
     data = {
-        "date": {
-            "iso": logical_dt.strftime("%Y-%m-%d"),
-            "date_cn": logical_dt.strftime("%Y年%m月%d日"),
-            "weekday_cn": CHINESE_WEEKDAY[logical_dt.weekday()],
-            "input_iso": input_dt.strftime("%Y-%m-%d %H:%M"),
-            "effective_iso": input_dt.strftime("%Y-%m-%d %H:%M"),
-            "logical_date_iso": logical_dt.strftime("%Y-%m-%d"),
-            "boundaryShifted": boundary_shifted,
-        },
-        "lunar": {
-            "year": lunar_year,
-            "month": lunar_month,
-            "day": lunar_day,
-            "isLeap": is_leap,
-            "text": f"{lunar_year}年{'闰' if is_leap else ''}{lunar_month}月{lunar_day}日",
-        },
-        "ganzhi": {
-            "year": f"{TIANGAN[yg]}{DIZHI[yz]}",
-            "month": f"{TIANGAN[mg]}{DIZHI[mz]}",
-            "day": f"{TIANGAN[dg]}{DIZHI[dz]}",
-            "hour": f"{TIANGAN[hg]}{DIZHI[hz]}",
-            "text": f"{TIANGAN[yg]}{DIZHI[yz]}年 {TIANGAN[mg]}{DIZHI[mz]}月 {TIANGAN[dg]}{DIZHI[dz]}日 {TIANGAN[hg]}{DIZHI[hz]}时",
-        },
-        "solar_terms": _get_terms_for_date(logical_dt.month, logical_dt.day),
-        "daily": daily,
-        "decision": decision,
-        "capabilities": capabilities,
-        "provenance": {
-            "calendarCore": "algorithmic",
-            "ruleLayer": ruleset_id,
-            "ruleSourceLevel": source_metadata["ruleSourceLevel"],
-            "sourceRefs": source_metadata["sourceRefs"],
-            "isHybrid": is_hybrid,
-            "overlayRuleset": inp.overlay_ruleset,
-        },
-        "hour_slots": hour_slots,
+        **calendar_context,
+        "daily": rule_layer["daily"],
+        "decision": rule_layer["decision"],
+        "capabilities": rule_layer["capabilities"],
+        "provenance": rule_layer["provenance"],
         "meta": {
             "profileId": profile_cfg["id"],
             "profileLabel": profile_cfg["label"],
@@ -726,14 +680,13 @@ def calculate(inp: HuangliInput) -> Dict:
             "dayBoundary": profile_cfg["dayBoundary"],
             "timezone": "Asia/Shanghai",
             "rulesetVersion": "zh-traditional-v1",
-            "ruleLayer": ruleset_id,
+            "ruleLayer": rule_layer["ruleLayer"],
             "overlayRuleset": inp.overlay_ruleset,
             "notes": [
                 "lunar/ganzhi/terms are algorithmic outputs",
                 "yi-ji and shensha require external rule tables",
             ],
         },
-        "zodiac": SHENGXIAO[yz],
     }
     return data
 

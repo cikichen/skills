@@ -23,6 +23,7 @@ class HuangliCalcTests(unittest.TestCase):
         result = run_calc(2026, 3, 2, 12, "--profile", "market-folk-v1")
 
         self.assertEqual(result["lunar"]["text"], "2026年1月14日")
+        self.assertEqual(result["ganzhi"]["day"], "乙亥")
         self.assertEqual(result["solar_terms"]["current"], "雨水")
 
     def test_current_solar_term_uses_previous_month_term_before_first_jie(self) -> None:
@@ -44,7 +45,17 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertEqual(result["date"]["input_iso"], "2026-03-02 23:00")
         self.assertEqual(result["date"]["effective_iso"], "2026-03-02 23:00")
         self.assertEqual(result["date"]["logical_date_iso"], "2026-03-03")
-        self.assertEqual(result["ganzhi"]["day"], "丙午")
+        self.assertEqual(result["ganzhi"]["day"], "丙子")
+
+    def test_golden_case_2026_03_06_matches_official_almanac(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(result["lunar"]["text"], "2026年1月18日")
+        self.assertEqual(result["ganzhi"]["month"], "辛卯")
+        self.assertEqual(result["ganzhi"]["day"], "己卯")
+        self.assertEqual(result["solar_terms"]["current"], "惊蛰")
+        self.assertEqual(result["daily"]["jianchu"], "建")
+        self.assertEqual(result["daily"]["yellowBlackDao"], "明堂")
 
 
 if __name__ == "__main__":

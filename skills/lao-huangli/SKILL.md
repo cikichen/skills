@@ -26,6 +26,12 @@ metadata:
 2. **区分“确定性”与“流派性”**：节气、干支、农历可精确计算；宜忌、吉凶级别常依赖规则库。
 3. **必须可追溯**：输出时明确计算边界、时区、采用的规则版本。
 
+## 双原典边界
+
+- **基础历法层**：以 `GB/T 33661-2017《农历的编算和颁行》` 为准，负责农历、节气、朔望、闰月、干支。
+- **黄历规则层**：以 `《钦定协纪辨方书》` 为准，负责建除、黄黑道、神煞、冲煞、胎神、彭祖百忌和宜忌裁决。
+- **术语/展示材料**：只用于解释字段含义，不得直接替代规则原典。
+
 ## 计算总流程（工程化）
 
 1. **输入标准化**
@@ -107,10 +113,13 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 当前实现状态：
 
 - profile/ruleset 目录结构已建立
+- `calendar_core` 与 `rule_engine` 模块骨架已建立
 - `meta` 已输出 `profileId`、`profileLabel`、边界信息、`ruleLayer`、`overlayRuleset`
 - `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
+- `daily` 已稳定承载 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`，如指定 `--overlay-ruleset` 则输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
+- 当前节气仍是 `day-approximate / table-window` 近似窗口，尚未达到国家标准要求的天文精度
 
 规则来源约束：
 
@@ -122,13 +131,14 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 ## 输出格式（仿挂历，默认详细版）
 
 默认输出采用“**挂历完整版**”（正常版本），只有用户明确要求“简版/速览”时才降级精简。
+下面只示意版式，不表示某个真实日期的计算结果。
 
 ```text
 ┌────────────────────────────────────────────────────────────┐
-│ 2026年03月02日 星期一                                     │
+│ YYYY年MM月DD日 星期X                                      │
 │ 农历：二〇二六年 正月十四（闰月：否）                      │
-│ 干支：丙午年 庚寅月 乙巳日（时柱按用户时刻另算）           │
-│ 节气：当前 雨水 → 下个 惊蛰                                │
+│ 干支：年柱 / 月柱 / 日柱（时柱按用户时刻另算）             │
+│ 节气：当前 节气A → 下个 节气B                              │
 ├────────────────────────────────────────────────────────────┤
 │ 【宜】出行  会友  祭祀  祈福  纳财                          │
 │ 【忌】动土  开仓  破屋                                      │

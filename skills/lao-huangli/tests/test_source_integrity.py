@@ -7,6 +7,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SourceIntegrityTests(unittest.TestCase):
+    def test_xiejibianfang_rule_family_files_exist(self) -> None:
+        rules_dir = ROOT / "rules" / "xiejibianfang-v1"
+        for name in [
+            "duty-gods.json",
+            "good-stars.json",
+            "bad-stars.json",
+            "chongsha.json",
+            "taishen.json",
+            "pengzu.json",
+            "sources.json",
+        ]:
+            self.assertTrue((rules_dir / name).exists(), msg=name)
+
     def test_all_rules_have_source_fields(self) -> None:
         rules_dir = ROOT / "rules"
         rule_files = [

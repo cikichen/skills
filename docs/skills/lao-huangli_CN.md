@@ -38,6 +38,12 @@ skills/lao-huangli/
 4. 规则层映射（建除、值神、神煞、冲煞）
 5. 规则引擎生成宜忌并给出理由
 
+## 来源边界
+
+- 基础历法层以 `GB/T 33661-2017《农历的编算和颁行》` 为准。
+- 黄历规则层以 `《钦定协纪辨方书》` 为准。
+- 术语解释和展示材料只用于说明字段含义，不作为宜忌裁决依据。
+
 ## 脚本优先（准确性）
 
 先跑脚本得到可复算字段，再补规则库字段：
@@ -65,10 +71,13 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 当前实现状态：
 
+- `calendar_core` 与 `rule_engine` 骨架已建立
 - 脚本已输出 `meta.profileId`、`profileLabel`、边界字段、`ruleLayer`、`overlayRuleset`
 - `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
+- `daily` 已包含 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`；显式传入 `--overlay-ruleset` 后输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
+- 当前节气仍为 `day-approximate / table-window` 近似窗口，尚未升级到国家标准口径的天文历算
 
 规则来源约束：
 
@@ -88,14 +97,14 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 ## 推荐展示（仿挂历，默认详细版）
 
-默认采用“挂历完整版”（正常版本），不是简版。
+默认采用“挂历完整版”（正常版本），不是简版。下面只示意版式，不表示某个真实日期的计算结果。
 
 ```text
 ┌────────────────────────────────────────────────────────────┐
-│ 2026年03月02日 星期一                                     │
+│ YYYY年MM月DD日 星期X                                      │
 │ 农历：二〇二六年 正月十四（闰月：否）                      │
-│ 干支：丙午年 庚寅月 乙巳日                                │
-│ 节气：当前 雨水 → 下个 惊蛰                                │
+│ 干支：年柱 / 月柱 / 日柱                                  │
+│ 节气：当前 节气A → 下个 节气B                              │
 ├────────────────────────────────────────────────────────────┤
 │ 【宜】出行  会友  祭祀  祈福  纳财                          │
 │ 【忌】动土  开仓  破屋                                      │

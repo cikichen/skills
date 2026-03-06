@@ -451,6 +451,31 @@ def compute_jianchu(profile_id: str, month_branch: str, day_branch: str) -> str:
     return cycle[(day_index - month_index) % 12]
 
 
+def compute_yellow_black_dao(profile_id: str, month_branch: str, day_branch: str) -> str:
+    rules = load_ruleset_items(profile_id, "yellow-black-dao")
+    if not rules:
+        return "待规则库补齐"
+
+    rule = rules[0]
+    start_branch = rule["monthStarts"][month_branch]
+    start_index = DIZHI.index(start_branch)
+    day_index = DIZHI.index(day_branch)
+    return rule["order"][(day_index - start_index) % 12]
+
+
+def evaluate_rules(profile_id: str, rule_context: Dict[str, str]) -> Dict[str, List[str]]:
+    decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
+    for rule in load_ruleset_items(profile_id, "yi-ji-rules"):
+        if rule_context.get(rule["field"]) not in rule["values"]:
+            continue
+
+        effect = rule["effect"]
+        decision[effect].extend(rule["items"])
+        decision["explanations"].append(rule["reason"])
+
+    return decision
+
+
 def _get_terms_for_date(month: int, day: int) -> Dict[str, str]:
     terms = JIEQI_DATES.get(month, [])
     if not terms:
@@ -480,6 +505,12 @@ def _get_terms_for_date(month: int, day: int) -> Dict[str, str]:
 
 def _render_calendar_block(data: Dict) -> str:
     date = data["date"]
+    daily = data.get("daily", {})
+    decision = data.get("decision", {})
+    yi_text = "  ".join(decision.get("yi", [])) or "待规则库补齐"
+    ji_text = "  ".join(decision.get("ji", [])) or "待规则库补齐"
+    jianchu_text = daily.get("jianchu", "待规则库补齐")
+    yellow_black_text = daily.get("yellowBlackDao", "待规则库补齐")
     lines = [
         "┌────────────────────────────────────────────────────────────┐",
         f"│ {date['date_cn']}  {date['weekday_cn']:<44}│",
@@ -488,10 +519,10 @@ def _render_calendar_block(data: Dict) -> str:
         f"│ 节气：{data['solar_terms']['current']} → 下个 {data['solar_terms']['next']:<35}│",
         f"│ 口径：{data['meta']['profileLabel']:<52}│",
         "├────────────────────────────────────────────────────────────┤",
-        "│ 【宜】待规则库补齐                                           │",
-        "│ 【忌】待规则库补齐                                           │",
+        f"│ 【宜】{yi_text:<52}│",
+        f"│ 【忌】{ji_text:<52}│",
         "├────────────────────────────────────────────────────────────┤",
-        "│ 建除：待规则库补齐  黄黑道：待规则库补齐  值神：待规则库补齐 │",
+        f"│ 建除：{jianchu_text:<8} 黄黑道：{yellow_black_text:<8} 值神：待规则库补齐 │",
         "│ 冲煞：待规则库补齐  胎神：待规则库补齐  彭祖百忌：待规则库补齐 │",
         "│ 财神：待规则库补齐  喜神：待规则库补齐  福神：待规则库补齐   │",
         "├────────────────────────────────────────────────────────────┤",
@@ -549,6 +580,15 @@ def calculate(inp: HuangliInput) -> Dict:
     mg, mz = get_month_ganzhi(yg, jq_month)
     dg, dz = get_day_ganzhi(logical_dt.year, logical_dt.month, logical_dt.day)
     hg, hz = get_hour_ganzhi(dg, inp.hour)
+    month_branch = DIZHI[mz]
+    day_branch = DIZHI[dz]
+    daily = {
+        "jianchu": compute_jianchu(profile_cfg["id"], month_branch, day_branch),
+        "yellowBlackDao": compute_yellow_black_dao(
+            profile_cfg["id"], month_branch, day_branch
+        ),
+    }
+    decision = evaluate_rules(profile_cfg["id"], daily)
 
     hour_slots: List[Dict[str, str]] = []
     for idx, (name, hour_range) in enumerate(SHICHEN_SEGMENTS):
@@ -586,9 +626,8 @@ def calculate(inp: HuangliInput) -> Dict:
             "text": f"{TIANGAN[yg]}{DIZHI[yz]}年 {TIANGAN[mg]}{DIZHI[mz]}月 {TIANGAN[dg]}{DIZHI[dz]}日 {TIANGAN[hg]}{DIZHI[hz]}时",
         },
         "solar_terms": _get_terms_for_date(logical_dt.month, logical_dt.day),
-        "daily": {
-            "jianchu": compute_jianchu(profile_cfg["id"], DIZHI[mz], DIZHI[dz])
-        },
+        "daily": daily,
+        "decision": decision,
         "hour_slots": hour_slots,
         "meta": {
             "profileId": profile_cfg["id"],

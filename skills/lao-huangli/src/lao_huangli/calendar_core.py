@@ -3,6 +3,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple
+from zoneinfo import ZoneInfo
+
+from lao_huangli.astronomy import (
+    DEFAULT_TIMEZONE,
+    get_jieqi_month_for_datetime,
+    get_solar_term_occurrence,
+    get_solar_term_window,
+)
 
 
 TIANGAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -167,27 +175,8 @@ def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, 
     raise ValueError("lunar conversion failed")
 
 
-def get_jieqi_month(month: int, day: int) -> int:
-    month_map = {
-        2: 1,
-        3: 2,
-        4: 3,
-        5: 4,
-        6: 5,
-        7: 6,
-        8: 7,
-        9: 8,
-        10: 9,
-        11: 10,
-        12: 11,
-        1: 12,
-    }
-    jieqi = JIEQI_DATES.get(month, [])
-    jie_day = jieqi[0][1] if jieqi else 6
-    if day >= jie_day:
-        return month_map.get(month, month)
-    prev_month = month - 1 if month > 1 else 12
-    return month_map.get(prev_month, prev_month)
+def get_jieqi_month(dt: datetime) -> int:
+    return get_jieqi_month_for_datetime(dt, DEFAULT_TIMEZONE)
 
 
 def _spring_festival_date(year: int) -> datetime:
@@ -209,14 +198,15 @@ def apply_day_boundary(dt: datetime, day_boundary: str) -> datetime:
     return logical_date
 
 
-def get_year_ganzhi(year: int, month: int, day: int, year_boundary: str) -> Tuple[int, int]:
-    current = datetime(year, month, day)
+def get_year_ganzhi(current_dt: datetime, year_boundary: str) -> Tuple[int, int]:
+    current = current_dt.replace(tzinfo=ZoneInfo(DEFAULT_TIMEZONE))
+    year = current.year
 
     if year_boundary == "lichun":
-        lichun_day = JIEQI_DATES[2][0][1]
-        calc_year = year - 1 if (month < 2 or (month == 2 and day < lichun_day)) else year
+        lichun_at = get_solar_term_occurrence(year, "立春", DEFAULT_TIMEZONE)
+        calc_year = year - 1 if current < lichun_at else year
     elif year_boundary == "spring-festival":
-        spring_festival = _spring_festival_date(year)
+        spring_festival = _spring_festival_date(year).replace(tzinfo=ZoneInfo(DEFAULT_TIMEZONE))
         calc_year = year - 1 if current < spring_festival else year
     else:
         raise ValueError(f"unsupported year_boundary={year_boundary}")
@@ -249,33 +239,8 @@ def get_hour_ganzhi(day_gan: int, hour: int) -> Tuple[int, int]:
     return (start + hour_zhi) % 10, hour_zhi
 
 
-def get_terms_for_date(month: int, day: int) -> Dict[str, str]:
-    terms = JIEQI_DATES.get(month, [])
-    if not terms:
-        return {"current": "待补齐", "next": "待补齐", "note": "简化节气表"}
-
-    first_name, first_day = terms[0]
-    second_name, second_day = terms[1]
-
-    if day < first_day:
-        prev_month = month - 1 if month > 1 else 12
-        current = JIEQI_DATES[prev_month][1][0]
-        next_term = first_name
-    elif day < second_day:
-        current = first_name
-        next_term = second_name
-    else:
-        current = second_name
-        next_month = month + 1 if month < 12 else 1
-        next_term = JIEQI_DATES[next_month][0][0]
-
-    return {
-        "current": current,
-        "next": next_term,
-        "precision": "day-approximate",
-        "calculationMode": "table-window",
-        "note": "日期为近似值，若需天文精度需天文历算",
-    }
+def get_terms_for_date(dt: datetime) -> Dict[str, str]:
+    return get_solar_term_window(dt, DEFAULT_TIMEZONE)
 
 
 def build_hour_slots(hour_gan: int, hour_zhi: int) -> List[Dict[str, str]]:
@@ -296,14 +261,13 @@ def build_calendar_context(inp: CalendarCoreInput) -> Dict[str, object]:
     input_dt = datetime(inp.year, inp.month, inp.day, inp.hour)
     logical_dt = apply_day_boundary(input_dt, inp.day_boundary)
     boundary_shifted = logical_dt.date() != input_dt.date()
+    solar_terms = get_terms_for_date(input_dt)
 
     lunar_year, lunar_month, lunar_day, is_leap = gregorian_to_lunar(
         logical_dt.year, logical_dt.month, logical_dt.day
     )
-    year_gan, year_zhi = get_year_ganzhi(
-        logical_dt.year, logical_dt.month, logical_dt.day, inp.year_boundary
-    )
-    jieqi_month = get_jieqi_month(logical_dt.month, logical_dt.day)
+    year_gan, year_zhi = get_year_ganzhi(input_dt, inp.year_boundary)
+    jieqi_month = get_jieqi_month(input_dt)
     month_gan, month_zhi = get_month_ganzhi(year_gan, jieqi_month)
     day_gan, day_zhi = get_day_ganzhi(logical_dt.year, logical_dt.month, logical_dt.day)
     hour_gan, hour_zhi = get_hour_ganzhi(day_gan, inp.hour)
@@ -332,7 +296,7 @@ def build_calendar_context(inp: CalendarCoreInput) -> Dict[str, object]:
             "hour": f"{TIANGAN[hour_gan]}{DIZHI[hour_zhi]}",
             "text": f"{TIANGAN[year_gan]}{DIZHI[year_zhi]}年 {TIANGAN[month_gan]}{DIZHI[month_zhi]}月 {TIANGAN[day_gan]}{DIZHI[day_zhi]}日 {TIANGAN[hour_gan]}{DIZHI[hour_zhi]}时",
         },
-        "solar_terms": get_terms_for_date(logical_dt.month, logical_dt.day),
+        "solar_terms": solar_terms,
         "hour_slots": build_hour_slots(hour_gan, hour_zhi),
         "zodiac": SHENGXIAO[year_zhi],
         "indices": {

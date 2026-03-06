@@ -59,8 +59,21 @@ class StandardCalendarCoreTests(unittest.TestCase):
     def test_solar_terms_emit_precision_metadata(self) -> None:
         result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
 
-        self.assertEqual(result["solar_terms"]["precision"], "day-approximate")
-        self.assertEqual(result["solar_terms"]["calculationMode"], "table-window")
+        self.assertEqual(result["solar_terms"]["precision"], "astronomical")
+        self.assertEqual(result["solar_terms"]["calculationMode"], "skyfield-jpl")
+
+    def test_solar_terms_include_crossing_timestamps(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertIn("currentAt", result["solar_terms"])
+        self.assertIn("nextAt", result["solar_terms"])
+
+    def test_solar_terms_change_across_same_day_crossing_hour(self) -> None:
+        before = run_calc(2026, 3, 5, 21, "--profile", "market-folk-v1")
+        after = run_calc(2026, 3, 5, 22, "--profile", "market-folk-v1")
+
+        self.assertEqual(before["solar_terms"]["current"], "雨水")
+        self.assertEqual(after["solar_terms"]["current"], "惊蛰")
 
 
 if __name__ == "__main__":

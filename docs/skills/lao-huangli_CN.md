@@ -70,6 +70,13 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 - 仍兼容旧参数 `--mode market|bazi`
 - 新调用应统一使用 `--profile`
 
+依赖安装：
+
+```bash
+uv venv .venv
+uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
+```
+
 当前实现状态：
 
 - `calendar_core` 与 `rule_engine` 骨架已建立
@@ -78,7 +85,8 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 - `daily` 已包含 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`；显式传入 `--overlay-ruleset` 后输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
-- 当前节气仍为 `day-approximate / table-window` 近似窗口，尚未升级到国家标准口径的天文历算
+- 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`
+- 农历月序、定朔与无中气置闰仍未完整升级到 `GB/T 33661-2017` 口径
 
 规则来源约束：
 

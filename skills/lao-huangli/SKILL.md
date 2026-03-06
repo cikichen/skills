@@ -93,7 +93,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 - 公历→农历
 - 年/月/日/时干支
-- 节气区间（简化表）
+- 节气区间与交节时刻
 - 12 时辰干支
 
 当前脚本支持三种 profile：
@@ -111,6 +111,13 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 - 宜/忌、建除、值神、神煞、方位等规则字段（未加载规则库时明确输出“待规则库补齐”）
 
+依赖安装（当前最小集）：
+
+```bash
+uv venv .venv
+uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
+```
+
 当前实现状态：
 
 - profile/ruleset 目录结构已建立
@@ -120,7 +127,8 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 - `daily` 已稳定承载 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`，如指定 `--overlay-ruleset` 则输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
-- 当前节气仍是 `day-approximate / table-window` 近似窗口，尚未达到国家标准要求的天文精度
+- 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`
+- 农历月序、定朔与无中气置闰仍未完整升级到 `GB/T 33661-2017` 口径
 
 规则来源约束：
 

@@ -56,7 +56,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
 ```
 
-- Script-computable: lunar date, ganzhi pillars, solar-term window, 12-hour ganzhi slots
+- Script-computable: lunar date, ganzhi pillars, solar-term window with timestamps, 12-hour ganzhi slots
 - Rule-table fields (yi/ji, stars, duty god, etc.) stay explicit placeholders until a ruleset is loaded
 
 Supported calculation profiles:
@@ -70,6 +70,13 @@ Compatibility note:
 - Legacy `--mode market|bazi` is still accepted
 - New work should use `--profile`
 
+Dependency setup:
+
+```bash
+uv venv .venv
+uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
+```
+
 Current implementation status:
 
 - The `calendar_core` and `rule_engine` scaffolds are now in place
@@ -78,7 +85,8 @@ Current implementation status:
 - `daily` now carries `jianchu`, `yellowBlackDao`, `chongsha`, `taishen`, and `pengzu`
 - `bazi-v1` defaults to `bazi-core`; `--overlay-ruleset` enables hybrid almanac output
 - `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`
-- Solar terms are still exposed as `day-approximate / table-window`, not yet full standard-grade astronomical calculation
+- Solar terms now use `Skyfield + JPL ephemeris`, and emit `currentAt` / `nextAt`
+- Lunar month sequencing, true new moons, and leap-month determination are still not fully rewritten to complete `GB/T 33661-2017` behavior
 
 Rule provenance constraints:
 
@@ -105,7 +113,7 @@ Default output should be a **full calendar-style panel** (not a brief card), unl
 │ YYYY-MM-DD Weekday                                         │
 │ Lunar: Year YYYY Month M Day D (Leap: No)                │
 │ Ganzhi: Year Pillar / Month Pillar / Day Pillar          │
-│ Solar terms: Current term -> Next term (approximate)     │
+│ Solar terms: Current term -> Next term (with timestamps) │
 ├────────────────────────────────────────────────────────────┤
 │ [Yi] travel, worship, meetup, pray, wealth                │
 │ [Ji] groundbreaking, warehouse opening, demolition         │

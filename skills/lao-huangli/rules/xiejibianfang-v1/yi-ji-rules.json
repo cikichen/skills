@@ -32,5 +32,56 @@
     "effect": "ji",
     "items": ["土功", "营屋舍", "移徙", "远行", "嫁娶", "出军"],
     "reason": "黑道值日，不利土功、营屋舍、移徙、远行、嫁娶、出军。"
+  },
+  {
+    "id": "xjbfs-jian-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["建"],
+    "effect": "yi",
+    "items": ["施恩封拜", "诏命公卿", "招贤举正直", "上官赴任", "临政亲民"],
+    "reason": "建日止不忌施恩封拜、诏命公卿、招贤举正直、上官赴任、临政亲民。"
+  },
+  {
+    "id": "xjbfs-ping-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["平"],
+    "effect": "yi",
+    "items": ["祭祀", "入学", "沐浴", "整容", "剃头", "整手足甲", "补垣塞穴", "扫舍宇", "修饰垣墙", "平治道涂", "破屋坏垣", "伐木", "捕捉", "畋猎", "取鱼"],
+    "reason": "平日止不忌祭祀、入学、沐浴、整容、剃头、整手足甲、补垣塞穴、扫舍宇、修饰垣墙、平治道涂、破屋坏垣、伐木、捕捉、畋猎、取鱼。"
+  },
+  {
+    "id": "xjbfs-shou-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["收"],
+    "effect": "yi",
+    "items": ["祭祀", "入学", "进人口", "纳财", "修仓库", "捕捉", "栽种", "牧养", "纳畜"],
+    "reason": "收日止不忌祭祀、入学、进人口、纳财、修仓库、捕捉、栽种、牧养、纳畜。"
   }
 ]

@@ -42,6 +42,7 @@ skills/lao-huangli/
 
 - The calendar core should follow `GB/T 33661-2017 Calculation and promulgation of the Chinese calendar`.
 - The almanac rule layer should follow `Qinding Xieji Bianfang Shu`.
+- If a fact-layer field has not yet been structurally extracted from `Qinding Xieji Bianfang Shu`, another traceable classical source may be used only when it is explicitly listed in `provenance.sourceRefs`.
 - Glossaries and field explainers are documentation aids only, not rule authorities.
 
 ## Script-first Accuracy
@@ -83,7 +84,7 @@ Rule provenance constraints:
 
 - Every rule file must carry `sourceLevel`
 - Every rule file must carry `sourceRef`
-- `xiejibianfang-v1` currently uses `L1-primary`
+- `xiejibianfang-v1` currently mixes `L1-primary` and `L2-derived-documented`
 - `market-folk-v1` currently mixes `L2-derived-documented` and `L3-market-observed`
 
 ## 输出建议

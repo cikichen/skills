@@ -30,6 +30,7 @@ metadata:
 
 - **基础历法层**：以 `GB/T 33661-2017《农历的编算和颁行》` 为准，负责农历、节气、朔望、闰月、干支。
 - **黄历规则层**：以 `《钦定协纪辨方书》` 为准，负责建除、黄黑道、神煞、冲煞、胎神、彭祖百忌和宜忌裁决。
+- **补充古籍**：若某事实层字段暂未在 `《钦定协纪辨方书》` 中结构化落盘，可使用其他可追溯古籍补充，但必须在 `provenance.sourceRefs` 中逐项显式标明，不得冒称为协纪辨方书原文。
 - **术语/展示材料**：只用于解释字段含义，不得直接替代规则原典。
 
 ## 计算总流程（工程化）
@@ -125,7 +126,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 - 每条规则文件必须带 `sourceLevel`
 - 每条规则文件必须带 `sourceRef`
-- `xiejibianfang-v1` 目前使用 `L1-primary`
+- `xiejibianfang-v1` 当前混合 `L1-primary` 与 `L2-derived-documented`
 - `market-folk-v1` 目前使用 `L2-derived-documented` / `L3-market-observed` 混合标记
 
 ## 输出格式（仿挂历，默认详细版）

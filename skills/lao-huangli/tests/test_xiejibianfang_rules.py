@@ -56,6 +56,43 @@ class XiejibianfangRulesTests(unittest.TestCase):
         self.assertTrue(result["decision"]["explanations"])
         self.assertTrue(result["provenance"]["sourceRefs"])
 
+    def test_xiejibianfang_jianchu_rules_expand_yi_items(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertIn("上官赴任", result["decision"]["yi"])
+        self.assertTrue(
+            any("建日" in explanation for explanation in result["decision"]["explanations"])
+        )
+
+    def test_xiejibianfang_shou_day_adds_na_cai(self) -> None:
+        result = run_calc(2026, 3, 2, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertIn("纳财", result["decision"]["yi"])
+        self.assertTrue(
+            any("收日" in explanation for explanation in result["decision"]["explanations"])
+        )
+
+    def test_xiejibianfang_emits_field_level_sources(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertIn("fieldSources", result["provenance"])
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["chongsha"]["sourceLevel"],
+            "L2-derived-documented",
+        )
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["pengzu"]["sourceLevel"],
+            "L1-primary",
+        )
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["taishen"]["sourceLevel"],
+            "L2-derived-documented",
+        )
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["taishen"]["status"],
+            "implemented",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

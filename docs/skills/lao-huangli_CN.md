@@ -42,6 +42,7 @@ skills/lao-huangli/
 
 - 基础历法层以 `GB/T 33661-2017《农历的编算和颁行》` 为准。
 - 黄历规则层以 `《钦定协纪辨方书》` 为准。
+- 若个别事实层字段暂未在 `《钦定协纪辨方书》` 中结构化落盘，可用其他可追溯古籍补充，但必须在 `provenance.sourceRefs` 中显式标明。
 - 术语解释和展示材料只用于说明字段含义，不作为宜忌裁决依据。
 
 ## 脚本优先（准确性）
@@ -83,7 +84,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 - 每条规则文件必须带 `sourceLevel`
 - 每条规则文件必须带 `sourceRef`
-- `xiejibianfang-v1` 当前使用 `L1-primary`
+- `xiejibianfang-v1` 当前混合 `L1-primary` 与 `L2-derived-documented`
 - `market-folk-v1` 当前混合 `L2-derived-documented` 与 `L3-market-observed`
 
 ## 输出建议

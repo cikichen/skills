@@ -18,6 +18,16 @@ def run_calc(*args: str) -> dict:
     return json.loads(proc.stdout)
 
 
+def run_calc_text(*args: str) -> str:
+    proc = subprocess.run(
+        [sys.executable, str(SCRIPT), *map(str, args), "--format", "calendar"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return proc.stdout
+
+
 class HuangliCalcTests(unittest.TestCase):
     def test_golden_case_2026_03_02_market(self) -> None:
         result = run_calc(2026, 3, 2, 12, "--profile", "market-folk-v1")
@@ -56,6 +66,13 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertEqual(result["solar_terms"]["current"], "惊蛰")
         self.assertEqual(result["daily"]["jianchu"], "建")
         self.assertEqual(result["daily"]["yellowBlackDao"], "明堂")
+
+    def test_calendar_format_renders_real_rule_facts(self) -> None:
+        text = run_calc_text(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertIn("冲鸡煞西", text)
+        self.assertIn("占大门外正西", text)
+        self.assertIn("己不破券，二主并亡", text)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ This repository consolidates multiple standalone skill projects into one place f
 | **wsl-shell-reliability** | Reliability-first shell selection for Windows (WSL/PowerShell) | [English](docs/skills/wsl-shell-reliability.md) · [中文](docs/skills/wsl-shell-reliability_CN.md) |
 | **yoebao-bazi** | Bazi charting tool using Yoebao API with four pillars and decadal fortune output | N/A |
 | **bazi-mingli** | Comprehensive Bazi interpretation skill with built-in calculator, ethics guide, and references | N/A |
+| **lao-huangli** | Chinese almanac computation workflow covering lunar calendar, ganzhi, solar terms, and yi/ji rule engine boundaries | [English](docs/skills/lao-huangli.md) · [中文](docs/skills/lao-huangli_CN.md) |
 
 ## Quick Start
 

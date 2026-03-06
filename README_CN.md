@@ -17,6 +17,7 @@
 | **wsl-shell-reliability** | Windows 可靠性优先的 Shell 选择（WSL/PowerShell） | [English](docs/skills/wsl-shell-reliability.md) · [中文](docs/skills/wsl-shell-reliability_CN.md) |
 | **yoebao-bazi** | 基于 Yoebao API 的八字排盘工具，可输出四柱与大运 | 暂无 |
 | **bazi-mingli** | 完整八字命理解读 skill，内置排盘脚本、伦理规范与参考资料 | 暂无 |
+| **lao-huangli** | 老黄历计算工作流，覆盖农历换算、干支、节气与宜忌规则边界 | [English](docs/skills/lao-huangli.md) · [中文](docs/skills/lao-huangli_CN.md) |
 
 ## 快速开始
 

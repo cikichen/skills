@@ -2,3 +2,5 @@
 **/.DS_Store
 .ace-tool/
 .worktrees/
+**/__pycache__/
+*.pyc

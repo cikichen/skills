@@ -19,6 +19,12 @@ def run_calc(*args: str) -> dict:
 
 
 class HuangliCalcTests(unittest.TestCase):
+    def test_golden_case_2026_03_02_market(self) -> None:
+        result = run_calc(2026, 3, 2, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["lunar"]["text"], "2026年1月14日")
+        self.assertEqual(result["solar_terms"]["current"], "雨水")
+
     def test_current_solar_term_uses_previous_month_term_before_first_jie(self) -> None:
         result = run_calc(2026, 3, 2, 12)
 

@@ -17,6 +17,8 @@ class XiejibianfangRulesTests(unittest.TestCase):
         self.assertIn("decision", result)
         self.assertIn("yi", result["decision"])
         self.assertIn("ji", result["decision"])
+        self.assertIn("sourceRefs", result["provenance"])
+        self.assertTrue(result["provenance"]["sourceRefs"])
 
 
 if __name__ == "__main__":

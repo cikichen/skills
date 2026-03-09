@@ -193,6 +193,38 @@ def compute_directions(profile_id: str, day_gan: str) -> Dict[str, str]:
     }
 
 
+def compute_time_gods(
+    profile_id: str, day_branch: str, hour_slots: List[Dict[str, str]]
+) -> List[Dict[str, str]]:
+    rules = load_ruleset_items(profile_id, "time-gods")
+    if not rules:
+        return hour_slots
+
+    rule = rules[0]
+    offset = rule.get("offsetsByDayBranch", {}).get(day_branch)
+    if offset is None:
+        return hour_slots
+
+    order = rule.get("order", [])
+    god_types = rule.get("godTypes", {})
+    luck_by_type = rule.get("luckByGodType", {})
+    if not order:
+        return hour_slots
+
+    enriched: List[Dict[str, str]] = []
+    for idx, item in enumerate(hour_slots):
+        tian_shen = order[(idx + offset) % len(order)]
+        god_type = god_types.get(tian_shen, "")
+        enriched.append(
+            {
+                **item,
+                "tianShen": tian_shen,
+                "luck": luck_by_type.get(god_type, ""),
+            }
+        )
+    return enriched
+
+
 def evaluate_rules(profile_id: str, rule_context: Dict[str, str]) -> Dict[str, List[str]]:
     decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
     for rule in load_ruleset_items(profile_id, "yi-ji-rules"):
@@ -327,6 +359,7 @@ def evaluate_rule_layer(
         "ruleSourceLevel": source_metadata["ruleSourceLevel"],
         "sourceRefs": source_metadata["sourceRefs"],
         "fieldSources": build_field_sources(ruleset_id, daily),
+        "hourSlotSource": get_rule_file_source_metadata(ruleset_id, "time-gods"),
         "isHybrid": is_hybrid,
         "overlayRuleset": overlay_ruleset,
     }

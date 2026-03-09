@@ -17,7 +17,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from lao_huangli.calendar_core import CalendarCoreInput, build_calendar_context
-from lao_huangli.rule_engine import evaluate_rule_layer
+from lao_huangli.rule_engine import compute_time_gods, evaluate_rule_layer
 
 
 TIANGAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -623,7 +623,12 @@ def _render_calendar_block(data: Dict) -> str:
     ]
 
     for item in data["hour_slots"]:
-        lines.append(f"│ {item['name']}时 {item['range']:<13} {item['ganzhi']:<39}│")
+        if item.get("tianShen") and item.get("luck"):
+            lines.append(
+                f"│ {item['name']}时 {item['range']} {item['ganzhi']} {item['tianShen']} {item['luck']:<23}│"
+            )
+        else:
+            lines.append(f"│ {item['name']}时 {item['range']:<13} {item['ganzhi']:<39}│")
 
     lines.extend(
         [
@@ -695,6 +700,11 @@ def calculate(inp: HuangliInput) -> Dict:
             ],
         },
     }
+    data["hour_slots"] = compute_time_gods(
+        profile_cfg["id"],
+        data["ganzhi"]["day"][1],
+        data["hour_slots"],
+    )
     return data
 
 

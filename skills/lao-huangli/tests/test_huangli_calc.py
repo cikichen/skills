@@ -87,6 +87,8 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertIn("财神：正北", text)
         self.assertIn("喜神：东北", text)
         self.assertIn("福神：正北", text)
+        self.assertIn("子时 23:00-00:59 甲子 司命 吉", text)
+        self.assertIn("丑时 01:00-02:59 乙丑 勾陈 凶", text)
         self.assertNotIn("overlayRuleset=", text)
         self.assertNotIn("effectiveAt=", text)
 

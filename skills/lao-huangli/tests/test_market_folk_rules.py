@@ -46,6 +46,15 @@ class MarketFolkRulesTests(unittest.TestCase):
         self.assertIn("安葬", result["decision"]["ji"])
         self.assertIn("破土", result["decision"]["ji"])
 
+    def test_market_profile_emits_hour_luck(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        hour_slots = {item["name"]: item for item in result["hour_slots"]}
+        self.assertEqual(hour_slots["子"]["tianShen"], "司命")
+        self.assertEqual(hour_slots["子"]["luck"], "吉")
+        self.assertEqual(hour_slots["丑"]["tianShen"], "勾陈")
+        self.assertEqual(hour_slots["丑"]["luck"], "凶")
+
 
 if __name__ == "__main__":
     unittest.main()

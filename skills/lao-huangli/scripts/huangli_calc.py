@@ -16,8 +16,14 @@ SRC_DIR = ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from lao_huangli.calendar_core import CalendarCoreInput, build_calendar_context
-from lao_huangli.rule_engine import compute_time_gods, evaluate_rule_layer
+IMPORT_ERROR: ModuleNotFoundError | None = None
+try:
+    from lao_huangli.calendar_core import CalendarCoreInput, build_calendar_context
+    from lao_huangli.rule_engine import compute_time_gods, evaluate_rule_layer
+except ModuleNotFoundError as exc:
+    if exc.name not in {"skyfield", "jplephem"}:
+        raise
+    IMPORT_ERROR = exc
 
 
 TIANGAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -785,6 +791,19 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    if IMPORT_ERROR is not None:
+        script_path = Path(__file__).resolve()
+        print(
+            "缺少老黄历运行依赖："
+            f"{IMPORT_ERROR.name}\n"
+            "推荐直接用 uv 运行，无需本地安装：\n"
+            f"  uv run --with skyfield==1.54 --with jplephem==2.24 python {script_path} 2026 3 9 12 --profile market-folk-v1 --format markdown\n"
+            "或先安装依赖：\n"
+            "  uv venv .venv\n"
+            "  uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt",
+            file=sys.stderr,
+        )
+        sys.exit(2)
     args = parse_args()
     profile_id = args.profile or LEGACY_MODE_TO_PROFILE[args.mode]
     result = calculate(

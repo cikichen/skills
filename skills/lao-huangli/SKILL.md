@@ -7,6 +7,7 @@ metadata:
     requires:
       bins:
         - python3
+        - uv
 ---
 
 # 老黄历计算技能（Lao Huangli）
@@ -83,10 +84,10 @@ metadata:
 优先使用脚本计算“可精算字段”，不要直接凭网页汇总给结论。
 
 ```bash
-python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile market-folk-v1 --format calendar
-python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 12 --profile xiejibianfang-v1 --format json
-python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --format calendar
-python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
+skills/lao-huangli/scripts/huangli 2026 3 2 12 --profile market-folk-v1 --format calendar
+skills/lao-huangli/scripts/huangli 2026 3 2 12 --profile xiejibianfang-v1 --format json
+skills/lao-huangli/scripts/huangli 2026 3 2 23 --profile bazi-v1 --format calendar
+skills/lao-huangli/scripts/huangli 2026 3 2 23 --profile bazi-v1 --overlay-ruleset xiejibianfang-v1 --format json
 ```
 
 脚本产出保证：
@@ -113,7 +114,13 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 - 宜/忌、建除、值神、吉神凶神、冲煞、胎神、彭祖百忌等规则字段（未加载规则库时明确输出“待规则库补齐”）
 
-依赖安装（当前最小集）：
+推荐直接运行（无需本地安装依赖）：
+
+```bash
+skills/lao-huangli/scripts/huangli 2026 3 9 12 --profile market-folk-v1 --format markdown
+```
+
+如需本地固定环境，再手动安装依赖：
 
 ```bash
 uv venv .venv

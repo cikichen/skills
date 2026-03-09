@@ -11,7 +11,7 @@ from skyfield.api import Loader
 
 
 DEFAULT_TIMEZONE = "Asia/Shanghai"
-EPHEMERIS_NAME = "de421.bsp"
+EPHEMERIS_NAME = "de440s.bsp"
 SOLAR_TERM_NAMES = tuple(almanac_east_asia.SOLAR_TERMS_ZHS)
 JIE_TO_MONTH = {
     "立春": 1,
@@ -196,6 +196,7 @@ def build_lunar_months_for_anchor_year(anchor_year: int, timezone_name: str = DE
 
         lunation.update(
             {
+                "anchorYear": anchor_year,
                 "lunarYear": lunar_year,
                 "lunarMonth": lunar_month,
                 "isLeap": is_leap,
@@ -281,6 +282,7 @@ def get_solar_term_window(dt: datetime, timezone_name: str = DEFAULT_TIMEZONE) -
         "table": table,
         "precision": "astronomical",
         "calculationMode": "skyfield-jpl",
+        "ephemerisName": EPHEMERIS_NAME,
         "timezone": timezone_name,
         "note": "节气按 Skyfield + JPL 星历计算，时刻为本地时区结果",
     }

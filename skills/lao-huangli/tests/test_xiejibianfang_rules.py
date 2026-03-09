@@ -44,6 +44,9 @@ class XiejibianfangRulesTests(unittest.TestCase):
         result = run_calc(2026, 3, 2, 12, "--profile", "xiejibianfang-v1")
 
         self.assertIn("yellowBlackDao", result["daily"])
+        self.assertIn("dutyGod", result["daily"])
+        self.assertIn("goodStars", result["daily"])
+        self.assertIn("badStars", result["daily"])
         self.assertIn("decision", result)
         self.assertIn("yi", result["decision"])
         self.assertIn("ji", result["decision"])
@@ -77,6 +80,18 @@ class XiejibianfangRulesTests(unittest.TestCase):
 
         self.assertIn("fieldSources", result["provenance"])
         self.assertEqual(
+            result["provenance"]["fieldSources"]["dutyGod"]["sourceLevel"],
+            "L1-primary",
+        )
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["goodStars"]["sourceLevel"],
+            "L1-primary",
+        )
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["badStars"]["sourceLevel"],
+            "L1-primary",
+        )
+        self.assertEqual(
             result["provenance"]["fieldSources"]["chongsha"]["sourceLevel"],
             "L2-derived-documented",
         )
@@ -92,6 +107,18 @@ class XiejibianfangRulesTests(unittest.TestCase):
             result["provenance"]["fieldSources"]["taishen"]["status"],
             "implemented",
         )
+
+    def test_xiejibianfang_exposes_duty_god_and_star_lists(self) -> None:
+        good_day = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
+        bad_day = run_calc(2026, 3, 2, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(good_day["daily"]["dutyGod"], "明堂")
+        self.assertIn("明堂", good_day["daily"]["goodStars"])
+        self.assertEqual(good_day["daily"]["badStars"], [])
+        self.assertEqual(bad_day["daily"]["dutyGod"], "勾陈")
+        self.assertEqual(bad_day["daily"]["goodStars"], [])
+        self.assertIn("勾陈", bad_day["daily"]["badStars"])
+        self.assertTrue(good_day["capabilities"]["dutyGod"])
 
 
 if __name__ == "__main__":

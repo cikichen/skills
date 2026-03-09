@@ -11,6 +11,8 @@ class MarketFolkRulesTests(unittest.TestCase):
         self.assertIn("daily", result)
         self.assertNotEqual(result["daily"]["jianchu"], "待规则库补齐")
         self.assertNotEqual(result["daily"]["yellowBlackDao"], "待规则库补齐")
+        self.assertEqual(result["daily"]["dutyGod"], "勾陈")
+        self.assertIn("勾陈", result["daily"]["badStars"])
         self.assertIn("decision", result)
         self.assertTrue(result["decision"]["yi"] or result["decision"]["ji"])
 

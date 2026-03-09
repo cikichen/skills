@@ -10,6 +10,9 @@ class BaziProfileTests(unittest.TestCase):
         self.assertFalse(result["capabilities"]["yiJi"])
         self.assertFalse(result["provenance"]["isHybrid"])
         self.assertEqual(result["meta"]["profileId"], "bazi-v1")
+        self.assertEqual(result["daily"]["dutyGod"], "未启用")
+        self.assertEqual(result["daily"]["goodStars"], [])
+        self.assertEqual(result["provenance"]["fieldSources"]["dutyGod"]["status"], "pending")
 
     def test_bazi_overlay_enables_hybrid_almanac_output(self) -> None:
         result = run_calc(

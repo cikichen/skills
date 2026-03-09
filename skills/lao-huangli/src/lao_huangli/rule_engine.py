@@ -89,6 +89,38 @@ def compute_yellow_black_dao(profile_id: str, month_branch: str, day_branch: str
     return rule["order"][(day_index - start_index) % 12]
 
 
+def compute_duty_god(profile_id: str, month_branch: str, day_branch: str) -> str:
+    rules = load_ruleset_items(profile_id, "duty-gods")
+    if rules:
+        rule = rules[0]
+        order = rule["order"]
+        starts = load_ruleset_items(profile_id, "yellow-black-dao")
+        if starts:
+            start_branch = starts[0]["monthStarts"][month_branch]
+            start_index = DIZHI.index(start_branch)
+            day_index = DIZHI.index(day_branch)
+            return order[(day_index - start_index) % 12]
+    return compute_yellow_black_dao(profile_id, month_branch, day_branch)
+
+
+def compute_star_lists(profile_id: str, duty_god: str) -> Dict[str, List[str]]:
+    good_rules = load_ruleset_items(profile_id, "good-stars")
+    bad_rules = load_ruleset_items(profile_id, "bad-stars")
+    good_stars = good_rules[0].get("starsByDutyGod", {}).get(duty_god, []) if good_rules else []
+    bad_stars = bad_rules[0].get("starsByDutyGod", {}).get(duty_god, []) if bad_rules else []
+
+    if not good_rules or not bad_rules:
+        yb_rules = load_ruleset_items(profile_id, "yellow-black-dao")
+        if yb_rules:
+            good_gods = set(yb_rules[0].get("goodGods", []))
+            if duty_god in good_gods and not good_stars:
+                good_stars = [duty_god]
+            if duty_god not in good_gods and not bad_stars:
+                bad_stars = [duty_god]
+
+    return {"goodStars": good_stars, "badStars": bad_stars}
+
+
 def compute_chongsha(profile_id: str, day_branch: str) -> str:
     rules = load_ruleset_items(profile_id, "chongsha")
     if not rules:
@@ -140,13 +172,21 @@ def compute_taishen(profile_id: str, day_ganzhi: str) -> str:
 def evaluate_rules(profile_id: str, rule_context: Dict[str, str]) -> Dict[str, List[str]]:
     decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
     for rule in load_ruleset_items(profile_id, "yi-ji-rules"):
-        if rule_context.get(rule["field"]) not in rule["values"]:
+        field_value = rule_context.get(rule["field"])
+        match_mode = rule.get("match", "equals")
+        if match_mode == "containsAny":
+            values = field_value if isinstance(field_value, list) else []
+            if not any(value in values for value in rule["values"]):
+                continue
+        elif field_value not in rule["values"]:
             continue
 
         effect = rule["effect"]
         decision[effect].extend(rule["items"])
         decision["explanations"].append(rule["reason"])
 
+    for key in ("yi", "ji", "warnings", "explanations"):
+        decision[key] = list(OrderedDict.fromkeys(decision[key]))
     return decision
 
 
@@ -164,17 +204,19 @@ def get_capabilities(profile_id: str, ruleset_id: Optional[str], is_hybrid: bool
         "solarTerms": True,
         "jianchu": has_rule_layer,
         "yellowBlackDao": has_rule_layer,
-        "dutyGod": False,
+        "dutyGod": has_rule_layer,
         "yiJi": has_rule_layer,
         "sourceTrace": has_rule_layer,
         "isHybrid": is_hybrid,
     }
 
-
-def build_field_sources(ruleset_id: Optional[str], daily: Dict[str, str]) -> Dict[str, Dict[str, object]]:
+def build_field_sources(ruleset_id: Optional[str], daily: Dict[str, object]) -> Dict[str, Dict[str, object]]:
     field_to_rule_file = {
         "jianchu": "jianchu",
         "yellowBlackDao": "yellow-black-dao",
+        "dutyGod": "duty-gods",
+        "goodStars": "good-stars",
+        "badStars": "bad-stars",
         "chongsha": "chongsha",
         "taishen": "taishen",
         "pengzu": "pengzu",
@@ -182,8 +224,19 @@ def build_field_sources(ruleset_id: Optional[str], daily: Dict[str, str]) -> Dic
     field_sources: Dict[str, Dict[str, object]] = {}
     for field, rule_file in field_to_rule_file.items():
         metadata = get_rule_file_source_metadata(ruleset_id, rule_file)
+        if not ruleset_id:
+            field_sources[field] = {
+                "ruleFile": rule_file,
+                "status": "pending",
+                "sourceLevel": metadata["ruleSourceLevel"],
+                "sourceRefs": metadata["sourceRefs"],
+            }
+            continue
         value = daily.get(field, "")
-        status = "pending" if value == "待规则库补齐" else "implemented"
+        if isinstance(value, list):
+            status = "implemented" if value else "pending"
+        else:
+            status = "pending" if value == "待规则库补齐" else "implemented"
         field_sources[field] = {
             "ruleFile": rule_file,
             "status": status,
@@ -206,16 +259,30 @@ def evaluate_rule_layer(
     ruleset_id = get_active_ruleset(profile_id, overlay_ruleset)
 
     if ruleset_id:
+        duty_god = compute_duty_god(ruleset_id, month_branch, day_branch)
+        star_lists = compute_star_lists(ruleset_id, duty_god)
         daily = {
             "jianchu": compute_jianchu(ruleset_id, month_branch, day_branch),
             "yellowBlackDao": compute_yellow_black_dao(ruleset_id, month_branch, day_branch),
+            "dutyGod": duty_god,
+            "goodStars": star_lists["goodStars"],
+            "badStars": star_lists["badStars"],
             "chongsha": compute_chongsha(ruleset_id, day_branch),
             "taishen": compute_taishen(ruleset_id, day_ganzhi),
             "pengzu": compute_pengzu(ruleset_id, day_ganzhi),
         }
         decision = evaluate_rules(ruleset_id, daily)
     else:
-        daily = {}
+        daily = {
+            "jianchu": "未启用",
+            "yellowBlackDao": "未启用",
+            "dutyGod": "未启用",
+            "goodStars": [],
+            "badStars": [],
+            "chongsha": "未启用",
+            "taishen": "未启用",
+            "pengzu": "未启用",
+        }
         decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
 
     source_metadata = get_ruleset_source_metadata(ruleset_id)

@@ -109,7 +109,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 
 脚本不会伪造：
 
-- 宜/忌、建除、值神、神煞、方位等规则字段（未加载规则库时明确输出“待规则库补齐”）
+- 宜/忌、建除、值神、吉神凶神、冲煞、胎神、彭祖百忌等规则字段（未加载规则库时明确输出“待规则库补齐”）
 
 依赖安装（当前最小集）：
 
@@ -124,12 +124,12 @@ uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
 - `calendar_core` 与 `rule_engine` 模块骨架已建立
 - `meta` 已输出 `profileId`、`profileLabel`、边界信息、`ruleLayer`、`overlayRuleset`
 - `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
-- `daily` 已稳定承载 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
+- `daily` 已稳定承载 `jianchu`、`yellowBlackDao`、`dutyGod`、`goodStars`、`badStars`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`，如指定 `--overlay-ruleset` 则输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
 - 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`
 - `solar_terms` 现已提供 `table`、`currentJie`、`currentQi`、`nextJie`、`nextQi`，便于后续按 6tail 风格继续派生字段
-- `lunar` 现已提供 `monthStartDate`、`monthDayCount`、`leapMonth`、`zhongQi`、`calculationMode`
+- `lunar` 现已提供 `monthStartDate`、`monthEndDate`、`monthDayCount`、`leapMonth`、`zhongQi`、`containsZhongQi`、`anchorYear`、`yearMonthTable`、`yearMonthCount`、`yearLeapMonth`、`currentMonthIndex`、`calculationMode`
 - 农历月序、定朔与无中气置闰仍未完整升级到 `GB/T 33661-2017` 口径
 
 规则来源约束：

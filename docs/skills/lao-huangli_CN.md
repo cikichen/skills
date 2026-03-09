@@ -57,7 +57,7 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 ```
 
 - 脚本可复算：农历、干支、节气区间、12时辰干支
-- 规则字段（宜忌/神煞/值神等）未加载规则库时会明确显示“待规则库补齐”
+- 规则字段（宜忌/值神/吉神凶神/冲煞/胎神/彭祖等）未加载规则库时会明确显示“待规则库补齐”
 
 当前支持的 profile：
 
@@ -87,7 +87,7 @@ uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
 - 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`
 - `solar_terms` 已带 `table`、`currentJie`、`currentQi`、`nextJie`、`nextQi`
-- `lunar` 已带 `monthStartDate`、`monthDayCount`、`leapMonth`、`zhongQi`、`calculationMode`
+- `lunar` 已带 `monthStartDate`、`monthEndDate`、`monthDayCount`、`leapMonth`、`zhongQi`、`containsZhongQi`、`anchorYear`、`yearMonthTable`、`yearMonthCount`、`yearLeapMonth`、`currentMonthIndex`、`calculationMode`
 - 农历月序、定朔与无中气置闰仍未完整升级到 `GB/T 33661-2017` 口径
 
 规则来源约束：

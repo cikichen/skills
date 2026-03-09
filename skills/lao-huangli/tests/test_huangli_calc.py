@@ -70,6 +70,8 @@ class HuangliCalcTests(unittest.TestCase):
     def test_calendar_format_renders_real_rule_facts(self) -> None:
         text = run_calc_text(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
 
+        self.assertIn("值神：明堂", text)
+        self.assertIn("吉神宜趋：明堂", text)
         self.assertIn("冲鸡煞西", text)
         self.assertIn("占大门外正西", text)
         self.assertIn("己不破券，二主并亡", text)

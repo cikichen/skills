@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 from lao_huangli.astronomy import (
     DEFAULT_TIMEZONE,
+    EPHEMERIS_NAME,
     get_lunar_month_context,
     build_lunar_months_for_anchor_year,
     get_jieqi_month_for_datetime,
@@ -167,6 +168,16 @@ def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, 
     try:
         month_context = get_lunar_month_context(target, DEFAULT_TIMEZONE)
         lunar_day = (target.date() - month_context["startDate"]).days + 1
+        year_months = get_lunar_months_for_year(int(month_context["lunarYear"]))
+        year_leap_month = next((int(month["lunarMonth"]) for month in year_months if month["isLeap"]), 0)
+        current_month_index = next(
+            (
+                idx
+                for idx, month in enumerate(year_months, start=1)
+                if month["startDate"] == month_context["startDate"] and bool(month["isLeap"]) == bool(month_context["isLeap"])
+            ),
+            0,
+        )
         return (
             int(month_context["lunarYear"]),
             int(month_context["lunarMonth"]),
@@ -174,13 +185,21 @@ def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, 
             bool(month_context["isLeap"]),
             {
                 "monthStartDate": month_context["startDate"].isoformat(),
+                "monthEndDate": month_context["endDate"].isoformat(),
                 "monthDayCount": int(month_context["dayCount"]),
                 "leapMonth": 0 if not month_context["isLeap"] else int(month_context["lunarMonth"]),
                 "zhongQi": month_context["zhongQi"],
+                "containsZhongQi": bool(month_context["containsZhongQi"]),
+                "anchorYear": int(month_context["anchorYear"]),
+                "yearMonthTable": [_serialize_lunar_month(month) for month in year_months],
+                "yearMonthCount": len(year_months),
+                "yearLeapMonth": year_leap_month,
+                "currentMonthIndex": current_month_index,
+                "ephemerisName": EPHEMERIS_NAME,
                 "calculationMode": "astronomical-lunation-table",
             },
         )
-    except Exception:
+    except ValueError:
         lunar_year, lunar_month, lunar_day, is_leap = _gregorian_to_lunar_table(year, month, day)
         return (
             lunar_year,
@@ -189,9 +208,17 @@ def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, 
             is_leap,
             {
                 "monthStartDate": None,
+                "monthEndDate": None,
                 "monthDayCount": None,
                 "leapMonth": 0,
                 "zhongQi": None,
+                "containsZhongQi": None,
+                "anchorYear": None,
+                "yearMonthTable": [],
+                "yearMonthCount": None,
+                "yearLeapMonth": 0,
+                "currentMonthIndex": None,
+                "ephemerisName": None,
                 "calculationMode": "table-fallback",
             },
         )
@@ -228,6 +255,20 @@ def get_lunar_months_for_year(lunar_year: int) -> List[Dict[str, object]]:
 
 def get_lunar_month_contexts(anchor_year: int) -> List[Dict[str, object]]:
     return [dict(month) for month in build_lunar_months_for_anchor_year(anchor_year)]
+
+
+def _serialize_lunar_month(month: Dict[str, object]) -> Dict[str, object]:
+    return {
+        "anchorYear": int(month["anchorYear"]),
+        "lunarYear": int(month["lunarYear"]),
+        "lunarMonth": int(month["lunarMonth"]),
+        "isLeap": bool(month["isLeap"]),
+        "startDate": month["startDate"].isoformat(),
+        "endDate": month["endDate"].isoformat(),
+        "dayCount": int(month["dayCount"]),
+        "containsZhongQi": bool(month["containsZhongQi"]),
+        "zhongQi": month["zhongQi"],
+    }
 
 
 def apply_day_boundary(dt: datetime, day_boundary: str) -> datetime:
@@ -328,9 +369,17 @@ def build_calendar_context(inp: CalendarCoreInput) -> Dict[str, object]:
             "isLeap": is_leap,
             "text": f"{lunar_year}年{'闰' if is_leap else ''}{lunar_month}月{lunar_day}日",
             "monthStartDate": lunar_meta["monthStartDate"],
+            "monthEndDate": lunar_meta["monthEndDate"],
             "monthDayCount": lunar_meta["monthDayCount"],
             "leapMonth": lunar_meta["leapMonth"],
             "zhongQi": lunar_meta["zhongQi"],
+            "containsZhongQi": lunar_meta["containsZhongQi"],
+            "anchorYear": lunar_meta["anchorYear"],
+            "yearMonthTable": lunar_meta["yearMonthTable"],
+            "yearMonthCount": lunar_meta["yearMonthCount"],
+            "yearLeapMonth": lunar_meta["yearLeapMonth"],
+            "currentMonthIndex": lunar_meta["currentMonthIndex"],
+            "ephemerisName": lunar_meta["ephemerisName"],
             "calculationMode": lunar_meta["calculationMode"],
         },
         "ganzhi": {

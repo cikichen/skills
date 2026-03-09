@@ -5,7 +5,7 @@
 `lao-huangli` 已完成以下基础能力：
 
 - `GB/T 33661-2017` 锚点测试已接入，覆盖 `1949-10-01 = 甲子日`、`1984-02-02 = 甲子年` 和 `2026-03-06` 官方样例。
-- `xiejibianfang-v1` 已接入最小可用规则层，当前可输出 `建除`、`黄黑道`、`冲煞`、`胎神`、`彭祖百忌` 和一部分 `宜/忌`。
+- `xiejibianfang-v1` 已接入最小可用规则层，当前可输出 `建除`、`黄黑道`、`值神`、`吉神/凶神`、`冲煞`、`胎神`、`彭祖百忌` 和一部分 `宜/忌`。
 - 输出已区分字段来源，`provenance.fieldSources` 会标记 `L1-primary` 与 `L2-derived-documented`。
 
 ## 未完成事项
@@ -18,7 +18,7 @@
 
 ### 2. 《协纪辨方书》规则层仍不完整
 
-- `good-stars.json`、`bad-stars.json`、`duty-gods.json`、`sources.json` 目前仍是骨架文件，尚未接入真实命中逻辑。
+- `good-stars.json`、`bad-stars.json`、`duty-gods.json` 已接入最小可用逻辑，当前主要仍缺更完整的神煞族，而不是空骨架。
 - `yi-ji-rules.json` 目前只覆盖最小闭环和卷十中一部分可直接程序化的条目，尚未完整覆盖各类 `建除` 与神煞组合裁决。
 - `market-folk-v1` 还没有基于 `xiejibianfang-v1` 完成系统化派生。
 

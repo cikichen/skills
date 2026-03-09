@@ -575,6 +575,9 @@ def _render_calendar_block(data: Dict) -> str:
         ji_text = "  ".join(decision.get("ji", [])) or "待规则库补齐"
         jianchu_text = daily.get("jianchu", "待规则库补齐")
         yellow_black_text = daily.get("yellowBlackDao", "待规则库补齐")
+        duty_god_text = daily.get("dutyGod", "待规则库补齐")
+        good_stars_text = "、".join(daily.get("goodStars", [])) or "待规则库补齐"
+        bad_stars_text = "、".join(daily.get("badStars", [])) or "待规则库补齐"
         chongsha_text = daily.get("chongsha", "待规则库补齐")
         taishen_text = daily.get("taishen", "待规则库补齐")
         pengzu_text = daily.get("pengzu", "待规则库补齐")
@@ -583,6 +586,9 @@ def _render_calendar_block(data: Dict) -> str:
         ji_text = "未启用（bazi-core）"
         jianchu_text = "未启用"
         yellow_black_text = "未启用"
+        duty_god_text = "未启用"
+        good_stars_text = "未启用"
+        bad_stars_text = "未启用"
         chongsha_text = "未启用"
         taishen_text = "未启用"
         pengzu_text = "未启用"
@@ -606,8 +612,9 @@ def _render_calendar_block(data: Dict) -> str:
         f"│ 【宜】{yi_text:<52}│",
         f"│ 【忌】{ji_text:<52}│",
         "├────────────────────────────────────────────────────────────┤",
-        f"│ 建除：{jianchu_text:<8} 黄黑道：{yellow_black_text:<8} 值神：待规则库补齐 │",
+        f"│ 建除：{jianchu_text:<8} 黄黑道：{yellow_black_text:<8} 值神：{duty_god_text:<8} │",
         f"│ 冲煞：{chongsha_text}  胎神：{taishen_text}  彭祖百忌：{pengzu_text} │",
+        f"│ 吉神宜趋：{good_stars_text:<12} 凶神宜忌：{bad_stars_text:<24}│",
         "│ 财神：待规则库补齐  喜神：待规则库补齐  福神：待规则库补齐   │",
         "├────────────────────────────────────────────────────────────┤",
         "│ 时辰干支（12时辰）                                           │",

@@ -87,6 +87,13 @@ class StandardCalendarCoreTests(unittest.TestCase):
         self.assertEqual(result["solar_terms"]["currentQi"]["name"], "雨水")
         self.assertEqual(result["solar_terms"]["nextQi"]["name"], "春分")
 
+    def test_lunar_exposes_month_start_and_calculation_mode(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["lunar"]["monthStartDate"], "2026-02-17")
+        self.assertEqual(result["lunar"]["calculationMode"], "astronomical-lunation-table")
+        self.assertEqual(result["lunar"]["leapMonth"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

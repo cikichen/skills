@@ -87,6 +87,7 @@ uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
 - 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`
 - `solar_terms` 已带 `table`、`currentJie`、`currentQi`、`nextJie`、`nextQi`
+- `lunar` 已带 `monthStartDate`、`monthDayCount`、`leapMonth`、`zhongQi`、`calculationMode`
 - 农历月序、定朔与无中气置闰仍未完整升级到 `GB/T 33661-2017` 口径
 
 规则来源约束：

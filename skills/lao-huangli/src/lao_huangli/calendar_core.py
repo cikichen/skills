@@ -7,6 +7,8 @@ from zoneinfo import ZoneInfo
 
 from lao_huangli.astronomy import (
     DEFAULT_TIMEZONE,
+    get_lunar_month_context,
+    build_lunar_months_for_anchor_year,
     get_jieqi_month_for_datetime,
     get_solar_term_occurrence,
     get_solar_term_window,
@@ -122,7 +124,7 @@ def _month_days(year_info: int, month: int, is_leap: bool = False) -> int:
     return 30 if (year_info >> (16 - month)) & 1 else 29
 
 
-def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, bool]:
+def _gregorian_to_lunar_table(year: int, month: int, day: int) -> Tuple[int, int, int, bool]:
     if year < 1900 or year > 2099:
         raise ValueError("year out of range 1900-2099")
 
@@ -160,20 +162,72 @@ def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, 
     raise ValueError("lunar conversion failed")
 
 
+def gregorian_to_lunar(year: int, month: int, day: int) -> Tuple[int, int, int, bool, Dict[str, object]]:
+    target = datetime(year, month, day, 12)
+    try:
+        month_context = get_lunar_month_context(target, DEFAULT_TIMEZONE)
+        lunar_day = (target.date() - month_context["startDate"]).days + 1
+        return (
+            int(month_context["lunarYear"]),
+            int(month_context["lunarMonth"]),
+            int(lunar_day),
+            bool(month_context["isLeap"]),
+            {
+                "monthStartDate": month_context["startDate"].isoformat(),
+                "monthDayCount": int(month_context["dayCount"]),
+                "leapMonth": 0 if not month_context["isLeap"] else int(month_context["lunarMonth"]),
+                "zhongQi": month_context["zhongQi"],
+                "calculationMode": "astronomical-lunation-table",
+            },
+        )
+    except Exception:
+        lunar_year, lunar_month, lunar_day, is_leap = _gregorian_to_lunar_table(year, month, day)
+        return (
+            lunar_year,
+            lunar_month,
+            lunar_day,
+            is_leap,
+            {
+                "monthStartDate": None,
+                "monthDayCount": None,
+                "leapMonth": 0,
+                "zhongQi": None,
+                "calculationMode": "table-fallback",
+            },
+        )
+
+
 def get_jieqi_month(dt: datetime) -> int:
     return get_jieqi_month_for_datetime(dt, DEFAULT_TIMEZONE)
 
 
 def _spring_festival_date(year: int) -> datetime:
+    for month in get_lunar_months_for_year(year):
+        if month["lunarYear"] == year and month["lunarMonth"] == 1 and not month["isLeap"]:
+            return datetime.combine(month["startDate"], datetime.min.time())
     cursor = datetime(year, 1, 1)
     for _ in range(70):
-        lunar_year, lunar_month, lunar_day, is_leap = gregorian_to_lunar(
+        lunar_year, lunar_month, lunar_day, is_leap, _ = gregorian_to_lunar(
             cursor.year, cursor.month, cursor.day
         )
         if lunar_year == year and lunar_month == 1 and lunar_day == 1 and not is_leap:
             return cursor
         cursor += timedelta(days=1)
     raise ValueError(f"spring festival date not found for year={year}")
+
+
+def get_lunar_months_for_year(lunar_year: int) -> List[Dict[str, object]]:
+    months: List[Dict[str, object]] = []
+    for anchor_year in (lunar_year - 1, lunar_year):
+        for month in get_lunar_month_contexts(anchor_year):
+            if month["lunarYear"] == lunar_year:
+                months.append(month)
+    months.sort(key=lambda item: item["startDate"])
+    return months
+
+
+def get_lunar_month_contexts(anchor_year: int) -> List[Dict[str, object]]:
+    return [dict(month) for month in build_lunar_months_for_anchor_year(anchor_year)]
 
 
 def apply_day_boundary(dt: datetime, day_boundary: str) -> datetime:
@@ -248,7 +302,7 @@ def build_calendar_context(inp: CalendarCoreInput) -> Dict[str, object]:
     boundary_shifted = logical_dt.date() != input_dt.date()
     solar_terms = get_terms_for_date(input_dt)
 
-    lunar_year, lunar_month, lunar_day, is_leap = gregorian_to_lunar(
+    lunar_year, lunar_month, lunar_day, is_leap, lunar_meta = gregorian_to_lunar(
         logical_dt.year, logical_dt.month, logical_dt.day
     )
     year_gan, year_zhi = get_year_ganzhi(input_dt, inp.year_boundary)
@@ -273,6 +327,11 @@ def build_calendar_context(inp: CalendarCoreInput) -> Dict[str, object]:
             "day": lunar_day,
             "isLeap": is_leap,
             "text": f"{lunar_year}年{'闰' if is_leap else ''}{lunar_month}月{lunar_day}日",
+            "monthStartDate": lunar_meta["monthStartDate"],
+            "monthDayCount": lunar_meta["monthDayCount"],
+            "leapMonth": lunar_meta["leapMonth"],
+            "zhongQi": lunar_meta["zhongQi"],
+            "calculationMode": lunar_meta["calculationMode"],
         },
         "ganzhi": {
             "year": f"{TIANGAN[year_gan]}{DIZHI[year_zhi]}",

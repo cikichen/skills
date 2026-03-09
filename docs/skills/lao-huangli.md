@@ -87,6 +87,7 @@ Current implementation status:
 - `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`
 - Solar terms now use `Skyfield + JPL ephemeris`, and emit `currentAt` / `nextAt`
 - `solar_terms` now also includes `table`, `currentJie`, `currentQi`, `nextJie`, and `nextQi`
+- `lunar` now includes `monthStartDate`, `monthDayCount`, `leapMonth`, `zhongQi`, and `calculationMode`
 - Lunar month sequencing, true new moons, and leap-month determination are still not fully rewritten to complete `GB/T 33661-2017` behavior
 
 Rule provenance constraints:

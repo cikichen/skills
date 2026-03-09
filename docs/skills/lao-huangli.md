@@ -81,7 +81,10 @@ Current implementation status:
 
 - The `calendar_core` and `rule_engine` scaffolds are now in place
 - The script emits `meta.profileId`, `profileLabel`, boundary metadata, `ruleLayer`, and `overlayRuleset`
-- `xiejibianfang-v1` and `market-folk-v1` now emit minimal `daily` and `decision` outputs
+- `xiejibianfang-v1` and `market-folk-v1` now emit usable `daily` and `decision` outputs
+- `daily` now includes `jianchu`, `yellowBlackDao`, `dutyGod`, `goodStars`, `badStars`, `chongsha`, `taishen`, and `pengzu`
+- `xiejibianfang-v1` yi/ji now covers a direct subset of juan 10 entries for `建/除/满/平/定/执/破/危/成/收/开/闭`
+- `market-folk-v1` now includes common `chongsha`, `taishen`, `pengzu`, and the same high-frequency jianchu yi/ji closure
 - `daily` now carries `jianchu`, `yellowBlackDao`, `chongsha`, `taishen`, and `pengzu`
 - `bazi-v1` defaults to `bazi-core`; `--overlay-ruleset` enables hybrid almanac output
 - `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`

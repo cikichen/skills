@@ -75,6 +75,40 @@ class XiejibianfangRulesTests(unittest.TestCase):
             any("收日" in explanation for explanation in result["decision"]["explanations"])
         )
 
+    def test_xiejibianfang_chu_day_adds_jiechu_and_chushi(self) -> None:
+        result = run_calc(2026, 3, 7, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(result["daily"]["jianchu"], "除")
+        self.assertIn("解除", result["decision"]["yi"])
+        self.assertIn("出师", result["decision"]["yi"])
+        self.assertTrue(
+            any("除日" in explanation for explanation in result["decision"]["explanations"])
+        )
+
+    def test_xiejibianfang_ding_day_adds_guandai_and_jice(self) -> None:
+        result = run_calc(2026, 3, 10, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(result["daily"]["jianchu"], "定")
+        self.assertIn("冠带", result["decision"]["yi"])
+        self.assertIn("计策", result["decision"]["yi"])
+
+    def test_xiejibianfang_kai_day_adds_kaishi_and_burial_taboos(self) -> None:
+        result = run_calc(2026, 3, 3, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(result["daily"]["jianchu"], "开")
+        self.assertIn("开市", result["decision"]["yi"])
+        self.assertIn("立券交易", result["decision"]["yi"])
+        self.assertIn("破土", result["decision"]["ji"])
+        self.assertIn("安葬", result["decision"]["ji"])
+
+    def test_xiejibianfang_bi_day_adds_tifang_and_many_taboos(self) -> None:
+        result = run_calc(2026, 3, 4, 12, "--profile", "xiejibianfang-v1")
+
+        self.assertEqual(result["daily"]["jianchu"], "闭")
+        self.assertIn("补垣塞穴", result["decision"]["yi"])
+        self.assertIn("修仓库", result["decision"]["ji"])
+        self.assertIn("破土", result["decision"]["ji"])
+
     def test_xiejibianfang_emits_field_level_sources(self) -> None:
         result = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")
 

@@ -83,5 +83,192 @@
     "effect": "yi",
     "items": ["祭祀", "入学", "进人口", "纳财", "修仓库", "捕捉", "栽种", "牧养", "纳畜"],
     "reason": "收日止不忌祭祀、入学、进人口、纳财、修仓库、捕捉、栽种、牧养、纳畜。"
+  },
+  {
+    "id": "xjbfs-chu-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["除"],
+    "effect": "yi",
+    "items": ["解除", "沐浴", "整容", "剃头", "整手足甲", "求医疗病", "扫舍宇", "施恩封拜", "举正直", "行幸遣使", "上官赴任", "临政亲民", "安抚边境", "选将训兵", "出师"],
+    "reason": "除日止不忌解除、沐浴、整容、剃头、整手足甲、求医疗病、扫舍宇、施恩封拜、举正直、行幸遣使、上官赴任、临政亲民、安抚边境、选将训兵、出师。"
+  },
+  {
+    "id": "xjbfs-man-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["满"],
+    "effect": "yi",
+    "items": ["进人口", "裁制", "修仓库", "经络", "开市", "立券交易", "纳财", "开仓库", "出货财", "补垣塞穴", "祭祀", "祈福", "上册进表章", "庆赐赏贺", "宴会", "修宫室", "缮城郭"],
+    "reason": "满日止不忌进人口、裁制、修仓库、经络、开市、立券交易、纳财、开仓库、出货财、补垣塞穴、祭祀、祈福、上册进表章、庆赐赏贺、宴会、修宫室、缮城郭。"
+  },
+  {
+    "id": "xjbfs-ding-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["定"],
+    "effect": "yi",
+    "items": ["冠带", "运谋", "算画", "计策"],
+    "reason": "定日止不忌冠带、运谋、算画、计策。"
+  },
+  {
+    "id": "xjbfs-zhi-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["执"],
+    "effect": "yi",
+    "items": ["捕捉"],
+    "reason": "执日止不忌捕捉。"
+  },
+  {
+    "id": "xjbfs-po-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["破"],
+    "effect": "yi",
+    "items": ["求医疗病", "破屋坏垣"],
+    "reason": "破日止不忌求医疗病、破屋坏垣。"
+  },
+  {
+    "id": "xjbfs-wei-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["危"],
+    "effect": "yi",
+    "items": ["安抚边境", "选将训兵", "安床"],
+    "reason": "危日止不忌安抚边境、选将训兵、安床。"
+  },
+  {
+    "id": "xjbfs-cheng-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["成"],
+    "effect": "yi",
+    "items": ["入学", "安抚边境", "搬移", "筑堤防", "开市", "施恩封拜", "举正直", "庆赐赏贺", "宴会", "行幸遣使", "上官赴任", "临政亲民", "结婚姻", "纳采", "问名", "嫁娶", "求医疗病"],
+    "reason": "成日止不忌入学、安抚边境、搬移、筑堤防、开市、施恩封拜、举正直、庆赐赏贺、宴会、行幸遣使、上官赴任、临政亲民、结婚姻、纳采、问名、嫁娶、求医疗病。"
+  },
+  {
+    "id": "xjbfs-kai-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["开"],
+    "effect": "yi",
+    "items": ["上册进表章", "施恩封拜", "举正直", "庆赐赏贺", "宴会", "行幸遣使", "开市", "立券交易", "纳财", "开仓库", "出货财"],
+    "reason": "开日止不忌上册进表章、施恩封拜、举正直、庆赐赏贺、宴会、行幸遣使、开市、立券交易、纳财、开仓库、出货财。"
+  },
+  {
+    "id": "xjbfs-kai-day-ji",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["开"],
+    "effect": "ji",
+    "items": ["破土", "安葬", "启攒"],
+    "reason": "开日忌破土、安葬、启攒。"
+  },
+  {
+    "id": "xjbfs-bi-day-yi",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["闭"],
+    "effect": "yi",
+    "items": ["筑堤防", "补垣塞穴"],
+    "reason": "闭日止不忌筑堤防、补垣塞穴。"
+  },
+  {
+    "id": "xjbfs-bi-day-ji",
+    "sourceLevel": "L1-primary",
+    "sourceRef": [
+      {
+        "work": "钦定协纪辨方书",
+        "location": "卷十",
+        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
+      }
+    ],
+    "interpretationType": "direct",
+    "field": "jianchu",
+    "values": ["闭"],
+    "effect": "ji",
+    "items": ["上册进表章", "修置产室", "开渠穿井", "安碓硙", "安床帐", "营建", "修宫室", "缮城郭", "筑堤防", "修仓库", "栽种", "牧养", "纳畜", "破土", "安葬", "启攒"],
+    "reason": "闭日忌上册进表章、修置产室、开渠穿井、安碓硙、安床帐、营建、修宫室、缮城郭、筑堤防、修仓库、栽种、牧养、纳畜、破土、安葬、启攒。"
   }
 ]

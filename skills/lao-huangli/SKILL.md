@@ -123,8 +123,10 @@ uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
 - profile/ruleset 目录结构已建立
 - `calendar_core` 与 `rule_engine` 模块骨架已建立
 - `meta` 已输出 `profileId`、`profileLabel`、边界信息、`ruleLayer`、`overlayRuleset`
-- `xiejibianfang-v1` 与 `market-folk-v1` 已输出最小 `daily/decision`
+- `xiejibianfang-v1` 与 `market-folk-v1` 已输出可用的 `daily/decision`
 - `daily` 已稳定承载 `jianchu`、`yellowBlackDao`、`dutyGod`、`goodStars`、`badStars`、`chongsha`、`taishen`、`pengzu`
+- `xiejibianfang-v1` 的 `宜/忌` 已覆盖 `建/除/满/平/定/执/破/危/成/收/开/闭` 的一批卷十直引条目
+- `market-folk-v1` 已补齐常用 `冲煞`、`胎神`、`彭祖百忌`，并沿用同一批高频 `建除` 宜忌收口
 - `bazi-v1` 默认只输出 `bazi-core`，如指定 `--overlay-ruleset` 则输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`
 - 节气现已改为 `Skyfield + JPL ephemeris` 的天文时刻窗口输出，并带 `currentAt` / `nextAt`

@@ -16,6 +16,25 @@ class MarketFolkRulesTests(unittest.TestCase):
         self.assertIn("decision", result)
         self.assertTrue(result["decision"]["yi"] or result["decision"]["ji"])
 
+    def test_market_profile_emits_rule_facts_not_placeholders(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["daily"]["chongsha"], "冲鸡煞西")
+        self.assertEqual(result["daily"]["taishen"], "占大门外正西")
+        self.assertEqual(
+            result["daily"]["pengzu"],
+            "己不破券，二主并亡；卯不穿井，泉水不香",
+        )
+
+    def test_market_profile_expands_common_jianchu_yi_ji(self) -> None:
+        result = run_calc(2026, 3, 3, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["daily"]["jianchu"], "开")
+        self.assertIn("开市", result["decision"]["yi"])
+        self.assertIn("立券交易", result["decision"]["yi"])
+        self.assertIn("安葬", result["decision"]["ji"])
+        self.assertIn("破土", result["decision"]["ji"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -30,6 +30,8 @@ def get_ruleset_source_metadata(ruleset_id: Optional[str]) -> Dict[str, object]:
     source_levels = OrderedDict()
     source_refs = OrderedDict()
     for path in sorted(ruleset_dir.glob("*.json")):
+        if path.name == "placeholder.json":
+            continue
         data = json.loads(path.read_text())
         if not isinstance(data, list):
             continue
@@ -292,8 +294,10 @@ def build_field_sources(ruleset_id: Optional[str], daily: Dict[str, object]) -> 
             }
             continue
         value = daily.get(field, "")
-        if isinstance(value, list):
-            status = "implemented" if value else "pending"
+        if metadata["ruleSourceLevel"] == "none":
+            status = "pending"
+        elif isinstance(value, list):
+            status = "implemented"
         else:
             status = "pending" if value == "待规则库补齐" else "implemented"
         field_sources[field] = {

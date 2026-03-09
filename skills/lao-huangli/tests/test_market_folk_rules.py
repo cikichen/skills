@@ -36,6 +36,7 @@ class MarketFolkRulesTests(unittest.TestCase):
         self.assertEqual(result["daily"]["caiShen"], "正北")
         self.assertEqual(result["daily"]["xiShen"], "东北")
         self.assertEqual(result["daily"]["fuShen"], "正北")
+        self.assertEqual(result["provenance"]["ruleSourceLevel"], "L2-derived-documented")
 
     def test_market_profile_expands_common_jianchu_yi_ji(self) -> None:
         result = run_calc(2026, 3, 3, 12, "--profile", "market-folk-v1")
@@ -54,6 +55,15 @@ class MarketFolkRulesTests(unittest.TestCase):
         self.assertEqual(hour_slots["子"]["luck"], "吉")
         self.assertEqual(hour_slots["丑"]["tianShen"], "勾陈")
         self.assertEqual(hour_slots["丑"]["luck"], "凶")
+
+    def test_market_profile_empty_star_side_is_still_marked_implemented(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["daily"]["badStars"], [])
+        self.assertEqual(
+            result["provenance"]["fieldSources"]["badStars"]["status"],
+            "implemented",
+        )
 
 
 if __name__ == "__main__":

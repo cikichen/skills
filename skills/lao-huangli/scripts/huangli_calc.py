@@ -571,13 +571,13 @@ def _render_calendar_block(data: Dict) -> str:
     capabilities = data.get("capabilities", {})
     provenance = data.get("provenance", {})
     if capabilities.get("yiJi", True):
-        yi_text = "  ".join(decision.get("yi", [])) or "待规则库补齐"
-        ji_text = "  ".join(decision.get("ji", [])) or "待规则库补齐"
+        yi_text = "  ".join(decision.get("yi", [])) or "无"
+        ji_text = "  ".join(decision.get("ji", [])) or "无"
         jianchu_text = daily.get("jianchu", "待规则库补齐")
         yellow_black_text = daily.get("yellowBlackDao", "待规则库补齐")
         duty_god_text = daily.get("dutyGod", "待规则库补齐")
-        good_stars_text = "、".join(daily.get("goodStars", [])) or "待规则库补齐"
-        bad_stars_text = "、".join(daily.get("badStars", [])) or "待规则库补齐"
+        good_stars_text = "、".join(daily.get("goodStars", [])) or "无"
+        bad_stars_text = "、".join(daily.get("badStars", [])) or "无"
         chongsha_text = daily.get("chongsha", "待规则库补齐")
         taishen_text = daily.get("taishen", "待规则库补齐")
         pengzu_text = daily.get("pengzu", "待规则库补齐")

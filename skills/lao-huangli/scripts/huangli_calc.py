@@ -639,6 +639,67 @@ def _render_calendar_block(data: Dict) -> str:
     return "\n".join(lines)
 
 
+def _render_markdown_block(data: Dict) -> str:
+    date = data["date"]
+    daily = data.get("daily", {})
+    decision = data.get("decision", {})
+    capabilities = data.get("capabilities", {})
+    provenance = data.get("provenance", {})
+    yi_text = "、".join(decision.get("yi", [])) or "无"
+    ji_text = "、".join(decision.get("ji", [])) or "无"
+    good_stars_text = "、".join(daily.get("goodStars", [])) or "无"
+    bad_stars_text = "、".join(daily.get("badStars", [])) or "无"
+
+    if provenance.get("ruleLayer"):
+        note = f"{data['meta']['profileLabel']}；农历/干支/节气可复算，宜忌供民俗参考。"
+    else:
+        note = "bazi-core，仅输出历法核心。"
+
+    lines = [
+        f"# {date['date_cn']} {date['weekday_cn']}",
+        "",
+        f"- 农历：{data['lunar']['text']}",
+        f"- 干支：{data['ganzhi']['text']}",
+        f"- 节气：{data['solar_terms']['current']} → 下个 {data['solar_terms']['next']}",
+        f"- 口径：{data['meta']['profileLabel']}",
+        "",
+        "## 宜忌",
+        f"- 宜：{yi_text}",
+        f"- 忌：{ji_text}",
+        "",
+        "## 日值",
+        f"- 建除：{daily.get('jianchu', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 黄黑道：{daily.get('yellowBlackDao', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 值神：{daily.get('dutyGod', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 冲煞：{daily.get('chongsha', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 胎神：{daily.get('taishen', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 彭祖百忌：{daily.get('pengzu', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 吉神宜趋：{good_stars_text if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 凶神宜忌：{bad_stars_text if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 财神：{daily.get('caiShen', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 喜神：{daily.get('xiShen', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        f"- 福神：{daily.get('fuShen', '未启用') if capabilities.get('yiJi', True) else '未启用'}",
+        "",
+        "## 时辰",
+        "",
+        "| 时辰 | 时间 | 干支 | 值时神 | 吉凶 |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+
+    for item in data["hour_slots"]:
+        lines.append(
+            f"| {item['name']}时 | {item['range']} | {item['ganzhi']} | {item.get('tianShen', '—')} | {item.get('luck', '—')} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            f"> 说明：{note}",
+        ]
+    )
+    return "\n".join(lines)
+
+
 @dataclass
 class HuangliInput:
     year: int
@@ -719,7 +780,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile")
     parser.add_argument("--mode", choices=["market", "bazi"], default="market")
     parser.add_argument("--overlay-ruleset")
-    parser.add_argument("--format", choices=["json", "calendar"], default="calendar")
+    parser.add_argument("--format", choices=["json", "calendar", "markdown"], default="calendar")
     return parser.parse_args()
 
 
@@ -738,6 +799,8 @@ def main() -> None:
     )
     if args.format == "json":
         print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.format == "markdown":
+        print(_render_markdown_block(result))
     else:
         print(_render_calendar_block(result))
 

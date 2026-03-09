@@ -18,9 +18,9 @@ def run_calc(*args: str) -> dict:
     return json.loads(proc.stdout)
 
 
-def run_calc_text(*args: str) -> str:
+def run_calc_text(*args: str, output_format: str = "calendar") -> str:
     proc = subprocess.run(
-        [sys.executable, str(SCRIPT), *map(str, args), "--format", "calendar"],
+        [sys.executable, str(SCRIPT), *map(str, args), "--format", output_format],
         check=True,
         capture_output=True,
         text=True,
@@ -93,6 +93,16 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertIn("丑时 01:00-02:59 乙丑 勾陈 凶", text)
         self.assertNotIn("overlayRuleset=", text)
         self.assertNotIn("effectiveAt=", text)
+
+    def test_market_markdown_format_renders_sections_and_hour_table(self) -> None:
+        text = run_calc_text(2026, 3, 6, 12, output_format="markdown")
+
+        self.assertIn("# 2026年03月06日 星期五", text)
+        self.assertIn("- 农历：2026年1月18日", text)
+        self.assertIn("## 宜忌", text)
+        self.assertIn("- 财神：正北", text)
+        self.assertIn("| 子时 | 23:00-00:59 | 甲子 | 司命 | 吉 |", text)
+        self.assertIn("| 丑时 | 01:00-02:59 | 乙丑 | 勾陈 | 凶 |", text)
 
 
 if __name__ == "__main__":

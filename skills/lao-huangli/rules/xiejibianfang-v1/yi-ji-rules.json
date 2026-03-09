@@ -1,39 +1,5 @@
 [
   {
-    "id": "xjbfs-yellow-dao-yi",
-    "sourceLevel": "L1-primary",
-    "sourceRef": [
-      {
-        "work": "钦定协纪辨方书",
-        "location": "卷七",
-        "url": "https://zh.wikisource.org/wiki/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B707"
-      }
-    ],
-    "interpretationType": "direct",
-    "field": "yellowBlackDao",
-    "values": ["青龙", "明堂", "金匮", "天德", "玉堂", "司命"],
-    "effect": "yi",
-    "items": ["兴众务"],
-    "reason": "黄道值日，宜兴众务。"
-  },
-  {
-    "id": "xjbfs-black-dao-ji",
-    "sourceLevel": "L1-primary",
-    "sourceRef": [
-      {
-        "work": "钦定协纪辨方书",
-        "location": "卷七",
-        "url": "https://zh.wikisource.org/wiki/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B707"
-      }
-    ],
-    "interpretationType": "direct",
-    "field": "yellowBlackDao",
-    "values": ["天刑", "朱雀", "白虎", "天牢", "玄武", "勾陈"],
-    "effect": "ji",
-    "items": ["土功", "营屋舍", "移徙", "远行", "嫁娶", "出军"],
-    "reason": "黑道值日，不利土功、营屋舍、移徙、远行、嫁娶、出军。"
-  },
-  {
     "id": "xjbfs-jian-day-yi",
     "sourceLevel": "L1-primary",
     "sourceRef": [
@@ -81,8 +47,8 @@
     "field": "jianchu",
     "values": ["收"],
     "effect": "yi",
-    "items": ["祭祀", "入学", "进人口", "纳财", "修仓库", "捕捉", "栽种", "牧养", "纳畜"],
-    "reason": "收日止不忌祭祀、入学、进人口、纳财、修仓库、捕捉、栽种、牧养、纳畜。"
+    "items": ["进人口", "纳财", "捕捉", "纳畜"],
+    "reason": "收日宜进人口、纳财、捕捉、纳畜。"
   },
   {
     "id": "xjbfs-chu-day-yi",
@@ -98,8 +64,8 @@
     "field": "jianchu",
     "values": ["除"],
     "effect": "yi",
-    "items": ["解除", "沐浴", "整容", "剃头", "整手足甲", "求医疗病", "扫舍宇", "施恩封拜", "举正直", "行幸遣使", "上官赴任", "临政亲民", "安抚边境", "选将训兵", "出师"],
-    "reason": "除日止不忌解除、沐浴、整容、剃头、整手足甲、求医疗病、扫舍宇、施恩封拜、举正直、行幸遣使、上官赴任、临政亲民、安抚边境、选将训兵、出师。"
+    "items": ["解除", "沐浴", "整容", "剃头", "整手足甲", "求医疗病", "扫舍宇"],
+    "reason": "除日宜解除、沐浴、整容、剃头、整手足甲、求医疗病、扫舍宇。"
   },
   {
     "id": "xjbfs-man-day-yi",
@@ -115,8 +81,8 @@
     "field": "jianchu",
     "values": ["满"],
     "effect": "yi",
-    "items": ["进人口", "裁制", "修仓库", "经络", "开市", "立券交易", "纳财", "开仓库", "出货财", "补垣塞穴", "祭祀", "祈福", "上册进表章", "庆赐赏贺", "宴会", "修宫室", "缮城郭"],
-    "reason": "满日止不忌进人口、裁制、修仓库、经络、开市、立券交易、纳财、开仓库、出货财、补垣塞穴、祭祀、祈福、上册进表章、庆赐赏贺、宴会、修宫室、缮城郭。"
+    "items": ["进人口", "裁制", "修仓库", "经络", "开市", "立券交易", "纳财", "开仓库", "出货财", "补垣塞穴"],
+    "reason": "满日宜进人口、裁制、修仓库、经络、开市、立券交易、纳财、开仓库、出货财、补垣塞穴。"
   },
   {
     "id": "xjbfs-ding-day-yi",
@@ -132,8 +98,8 @@
     "field": "jianchu",
     "values": ["定"],
     "effect": "yi",
-    "items": ["冠带", "运谋", "算画", "计策"],
-    "reason": "定日止不忌冠带、运谋、算画、计策。"
+    "items": ["冠带"],
+    "reason": "定日宜冠带。"
   },
   {
     "id": "xjbfs-zhi-day-yi",
@@ -200,8 +166,8 @@
     "field": "jianchu",
     "values": ["成"],
     "effect": "yi",
-    "items": ["入学", "安抚边境", "搬移", "筑堤防", "开市", "施恩封拜", "举正直", "庆赐赏贺", "宴会", "行幸遣使", "上官赴任", "临政亲民", "结婚姻", "纳采", "问名", "嫁娶", "求医疗病"],
-    "reason": "成日止不忌入学、安抚边境、搬移、筑堤防、开市、施恩封拜、举正直、庆赐赏贺、宴会、行幸遣使、上官赴任、临政亲民、结婚姻、纳采、问名、嫁娶、求医疗病。"
+    "items": ["入学", "安抚边境", "般移", "筑堤防", "开市"],
+    "reason": "成日宜入学、安抚边境、般移、筑堤防、开市。"
   },
   {
     "id": "xjbfs-kai-day-yi",
@@ -253,22 +219,5 @@
     "effect": "yi",
     "items": ["筑堤防", "补垣塞穴"],
     "reason": "闭日止不忌筑堤防、补垣塞穴。"
-  },
-  {
-    "id": "xjbfs-bi-day-ji",
-    "sourceLevel": "L1-primary",
-    "sourceRef": [
-      {
-        "work": "钦定协纪辨方书",
-        "location": "卷十",
-        "url": "https://zh.wikisource.org/zh-hans/%E6%AC%BD%E5%AE%9A%E5%8D%94%E7%B4%80%E8%BE%A8%E6%96%B9%E6%9B%B8_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B710"
-      }
-    ],
-    "interpretationType": "direct",
-    "field": "jianchu",
-    "values": ["闭"],
-    "effect": "ji",
-    "items": ["上册进表章", "修置产室", "开渠穿井", "安碓硙", "安床帐", "营建", "修宫室", "缮城郭", "筑堤防", "修仓库", "栽种", "牧养", "纳畜", "破土", "安葬", "启攒"],
-    "reason": "闭日忌上册进表章、修置产室、开渠穿井、安碓硙、安床帐、营建、修宫室、缮城郭、筑堤防、修仓库、栽种、牧养、纳畜、破土、安葬、启攒。"
   }
 ]

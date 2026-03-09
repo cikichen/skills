@@ -1,4 +1,8 @@
 import unittest
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from test_huangli_calc import run_calc
 
@@ -25,6 +29,13 @@ class MarketFolkRulesTests(unittest.TestCase):
             result["daily"]["pengzu"],
             "己不破券，二主并亡；卯不穿井，泉水不香",
         )
+
+    def test_market_profile_emits_direction_fields(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertEqual(result["daily"]["caiShen"], "正北")
+        self.assertEqual(result["daily"]["xiShen"], "东北")
+        self.assertEqual(result["daily"]["fuShen"], "正北")
 
     def test_market_profile_expands_common_jianchu_yi_ji(self) -> None:
         result = run_calc(2026, 3, 3, 12, "--profile", "market-folk-v1")

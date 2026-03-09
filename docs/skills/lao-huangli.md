@@ -65,6 +65,8 @@ Supported calculation profiles:
 - `xiejibianfang-v1`: spring-festival year boundary + 00:00 day boundary
 - `bazi-v1`: lichun year boundary + 23:00 day boundary
 
+Direct queries should default to `market-folk-v1`, which is the closest match to a common printed almanac.
+
 Compatibility note:
 
 - Legacy `--mode market|bazi` is still accepted
@@ -85,6 +87,7 @@ Current implementation status:
 - `daily` now includes `jianchu`, `yellowBlackDao`, `dutyGod`, `goodStars`, `badStars`, `chongsha`, `taishen`, and `pengzu`
 - `xiejibianfang-v1` yi/ji now covers a direct subset of juan 10 entries for `建/除/满/平/定/执/破/危/成/收/开/闭`
 - `market-folk-v1` now includes common `chongsha`, `taishen`, `pengzu`, and the same high-frequency jianchu yi/ji closure
+- `market-folk-v1` now also includes common `Wealth God / Joy God / Fortune God` directions
 - `daily` now carries `jianchu`, `yellowBlackDao`, `chongsha`, `taishen`, and `pengzu`
 - `bazi-v1` defaults to `bazi-core`; `--overlay-ruleset` enables hybrid almanac output
 - `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`

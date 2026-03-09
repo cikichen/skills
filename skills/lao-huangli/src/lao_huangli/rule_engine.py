@@ -169,6 +169,30 @@ def compute_taishen(profile_id: str, day_ganzhi: str) -> str:
     return rule["dayGanzhiToPosition"].get(day_ganzhi, "待规则库补齐")
 
 
+def compute_directions(profile_id: str, day_gan: str) -> Dict[str, str]:
+    rules = load_ruleset_items(profile_id, "directions")
+    if not rules:
+        return {
+            "caiShen": "待规则库补齐",
+            "xiShen": "待规则库补齐",
+            "fuShen": "待规则库补齐",
+        }
+
+    rule = rules[0]
+    values = rule.get("byDayGan", {}).get(day_gan)
+    if not values:
+        return {
+            "caiShen": "待规则库补齐",
+            "xiShen": "待规则库补齐",
+            "fuShen": "待规则库补齐",
+        }
+    return {
+        "caiShen": values.get("caiShen", "待规则库补齐"),
+        "xiShen": values.get("xiShen", "待规则库补齐"),
+        "fuShen": values.get("fuShen", "待规则库补齐"),
+    }
+
+
 def evaluate_rules(profile_id: str, rule_context: Dict[str, str]) -> Dict[str, List[str]]:
     decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
     for rule in load_ruleset_items(profile_id, "yi-ji-rules"):
@@ -220,6 +244,9 @@ def build_field_sources(ruleset_id: Optional[str], daily: Dict[str, object]) -> 
         "chongsha": "chongsha",
         "taishen": "taishen",
         "pengzu": "pengzu",
+        "caiShen": "directions",
+        "xiShen": "directions",
+        "fuShen": "directions",
     }
     field_sources: Dict[str, Dict[str, object]] = {}
     for field, rule_file in field_to_rule_file.items():
@@ -255,12 +282,14 @@ def evaluate_rule_layer(
     month_branch = ganzhi["month"][1]
     day_branch = ganzhi["day"][1]
     day_ganzhi = ganzhi["day"]
+    day_gan = day_ganzhi[0]
     is_hybrid = profile_id == "bazi-v1" and overlay_ruleset is not None
     ruleset_id = get_active_ruleset(profile_id, overlay_ruleset)
 
     if ruleset_id:
         duty_god = compute_duty_god(ruleset_id, month_branch, day_branch)
         star_lists = compute_star_lists(ruleset_id, duty_god)
+        directions = compute_directions(ruleset_id, day_gan)
         daily = {
             "jianchu": compute_jianchu(ruleset_id, month_branch, day_branch),
             "yellowBlackDao": compute_yellow_black_dao(ruleset_id, month_branch, day_branch),
@@ -270,6 +299,9 @@ def evaluate_rule_layer(
             "chongsha": compute_chongsha(ruleset_id, day_branch),
             "taishen": compute_taishen(ruleset_id, day_ganzhi),
             "pengzu": compute_pengzu(ruleset_id, day_ganzhi),
+            "caiShen": directions["caiShen"],
+            "xiShen": directions["xiShen"],
+            "fuShen": directions["fuShen"],
         }
         decision = evaluate_rules(ruleset_id, daily)
     else:
@@ -282,6 +314,9 @@ def evaluate_rule_layer(
             "chongsha": "未启用",
             "taishen": "未启用",
             "pengzu": "未启用",
+            "caiShen": "未启用",
+            "xiShen": "未启用",
+            "fuShen": "未启用",
         }
         decision = {"yi": [], "ji": [], "warnings": [], "explanations": []}
 

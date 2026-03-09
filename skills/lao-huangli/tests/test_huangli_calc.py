@@ -49,6 +49,11 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertEqual(result["meta"]["yearBoundary"], "spring-festival")
         self.assertEqual(result["meta"]["dayBoundary"], "00:00")
 
+    def test_default_profile_is_market_folk(self) -> None:
+        result = run_calc(2026, 3, 2, 12)
+
+        self.assertEqual(result["meta"]["profileId"], "market-folk-v1")
+
     def test_bazi_day_boundary_keeps_input_timestamp_but_advances_logical_date(self) -> None:
         result = run_calc(2026, 3, 2, 23, "--mode", "bazi")
 
@@ -75,6 +80,15 @@ class HuangliCalcTests(unittest.TestCase):
         self.assertIn("冲鸡煞西", text)
         self.assertIn("占大门外正西", text)
         self.assertIn("己不破券，二主并亡", text)
+
+    def test_market_calendar_format_renders_directions_and_short_note(self) -> None:
+        text = run_calc_text(2026, 3, 6, 12)
+
+        self.assertIn("财神：正北", text)
+        self.assertIn("喜神：东北", text)
+        self.assertIn("福神：正北", text)
+        self.assertNotIn("overlayRuleset=", text)
+        self.assertNotIn("effectiveAt=", text)
 
 
 if __name__ == "__main__":

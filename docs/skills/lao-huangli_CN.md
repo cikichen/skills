@@ -65,6 +65,8 @@ python3 skills/lao-huangli/scripts/huangli_calc.py 2026 3 2 23 --profile bazi-v1
 - `xiejibianfang-v1`：春节换年 + 00:00 换日（协纪辨方书规则底座预留）
 - `bazi-v1`：立春换年 + 23:00 换日（命理排盘口径）
 
+默认直接查询时，优先按 `market-folk-v1` 输出，效果更接近常见挂历版老黄历。
+
 兼容说明：
 
 - 仍兼容旧参数 `--mode market|bazi`
@@ -85,6 +87,7 @@ uv pip install --python .venv/bin/python -r skills/lao-huangli/requirements.txt
 - `daily` 已包含 `jianchu`、`yellowBlackDao`、`dutyGod`、`goodStars`、`badStars`、`chongsha`、`taishen`、`pengzu`
 - `xiejibianfang-v1` 的 `宜/忌` 已覆盖 `建/除/满/平/定/执/破/危/成/收/开/闭` 的一批卷十直引条目
 - `market-folk-v1` 已补齐常用 `冲煞`、`胎神`、`彭祖百忌`，并沿用同一批高频 `建除` 宜忌收口
+- `market-folk-v1` 已补齐常用 `财神 / 喜神 / 福神` 方位
 - `daily` 已包含 `jianchu`、`yellowBlackDao`、`chongsha`、`taishen`、`pengzu`
 - `bazi-v1` 默认只输出 `bazi-core`；显式传入 `--overlay-ruleset` 后输出 hybrid 黄历层
 - `provenance` 已输出 `ruleLayer`、`ruleSourceLevel`、`sourceRefs`、`isHybrid`

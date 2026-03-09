@@ -581,6 +581,9 @@ def _render_calendar_block(data: Dict) -> str:
         chongsha_text = daily.get("chongsha", "待规则库补齐")
         taishen_text = daily.get("taishen", "待规则库补齐")
         pengzu_text = daily.get("pengzu", "待规则库补齐")
+        cai_shen_text = daily.get("caiShen", "待规则库补齐")
+        xi_shen_text = daily.get("xiShen", "待规则库补齐")
+        fu_shen_text = daily.get("fuShen", "待规则库补齐")
     else:
         yi_text = "未启用（bazi-core）"
         ji_text = "未启用（bazi-core）"
@@ -592,15 +595,14 @@ def _render_calendar_block(data: Dict) -> str:
         chongsha_text = "未启用"
         taishen_text = "未启用"
         pengzu_text = "未启用"
+        cai_shen_text = "未启用"
+        xi_shen_text = "未启用"
+        fu_shen_text = "未启用"
 
     if provenance.get("ruleLayer"):
-        rule_note = (
-            f"规则层：{provenance['ruleLayer']} / "
-            f"sourceLevel={provenance['ruleSourceLevel']} / "
-            f"isHybrid={provenance['isHybrid']}"
-        )
+        rule_note = f"说明：{data['meta']['profileLabel']}；农历/干支/节气可复算，宜忌供民俗参考。"
     else:
-        rule_note = "规则层：未启用（bazi-core，仅输出历法核心）"
+        rule_note = "说明：bazi-core，仅输出历法核心。"
     lines = [
         "┌────────────────────────────────────────────────────────────┐",
         f"│ {date['date_cn']}  {date['weekday_cn']:<44}│",
@@ -615,7 +617,7 @@ def _render_calendar_block(data: Dict) -> str:
         f"│ 建除：{jianchu_text:<8} 黄黑道：{yellow_black_text:<8} 值神：{duty_god_text:<8} │",
         f"│ 冲煞：{chongsha_text}  胎神：{taishen_text}  彭祖百忌：{pengzu_text} │",
         f"│ 吉神宜趋：{good_stars_text:<12} 凶神宜忌：{bad_stars_text:<24}│",
-        "│ 财神：待规则库补齐  喜神：待规则库补齐  福神：待规则库补齐   │",
+        f"│ 财神：{cai_shen_text:<6} 喜神：{xi_shen_text:<6} 福神：{fu_shen_text:<26}│",
         "├────────────────────────────────────────────────────────────┤",
         "│ 时辰干支（12时辰）                                           │",
     ]
@@ -626,15 +628,7 @@ def _render_calendar_block(data: Dict) -> str:
     lines.extend(
         [
             "└────────────────────────────────────────────────────────────┘",
-            f"说明：农历/干支/节气由脚本可复算；{rule_note}",
-            (
-                f"边界：yearBoundary={data['meta']['yearBoundary']} / "
-                f"dayBoundary={data['meta']['dayBoundary']} / "
-                f"input={data['date']['input_iso']} / "
-                f"effectiveAt={data['date']['effective_iso']} / "
-                f"logicalDate={data['date']['logical_date_iso']} / "
-                f"overlayRuleset={data['provenance']['overlayRuleset']}"
-            ),
+            rule_note,
         ]
     )
     return "\n".join(lines)

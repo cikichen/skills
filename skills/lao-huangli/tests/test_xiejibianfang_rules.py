@@ -71,26 +71,25 @@ class XiejibianfangRulesTests(unittest.TestCase):
         result = run_calc(2026, 3, 2, 12, "--profile", "xiejibianfang-v1")
 
         self.assertIn("纳财", result["decision"]["yi"])
-        self.assertTrue(
-            any("收日" in explanation for explanation in result["decision"]["explanations"])
-        )
+        self.assertNotIn("修仓库", result["decision"]["yi"])
+        self.assertNotIn("栽种", result["decision"]["yi"])
+        self.assertNotIn("牧养", result["decision"]["yi"])
 
-    def test_xiejibianfang_chu_day_adds_jiechu_and_chushi(self) -> None:
+    def test_xiejibianfang_chu_day_only_keeps_unconditional_items(self) -> None:
         result = run_calc(2026, 3, 7, 12, "--profile", "xiejibianfang-v1")
 
         self.assertEqual(result["daily"]["jianchu"], "除")
         self.assertIn("解除", result["decision"]["yi"])
-        self.assertIn("出师", result["decision"]["yi"])
-        self.assertTrue(
-            any("除日" in explanation for explanation in result["decision"]["explanations"])
-        )
+        self.assertNotIn("出师", result["decision"]["yi"])
+        self.assertNotIn("安抚边境", result["decision"]["yi"])
 
-    def test_xiejibianfang_ding_day_adds_guandai_and_jice(self) -> None:
+    def test_xiejibianfang_ding_day_only_keeps_guandai(self) -> None:
         result = run_calc(2026, 3, 10, 12, "--profile", "xiejibianfang-v1")
 
         self.assertEqual(result["daily"]["jianchu"], "定")
         self.assertIn("冠带", result["decision"]["yi"])
-        self.assertIn("计策", result["decision"]["yi"])
+        self.assertNotIn("计策", result["decision"]["yi"])
+        self.assertNotIn("运谋", result["decision"]["yi"])
 
     def test_xiejibianfang_kai_day_adds_kaishi_and_burial_taboos(self) -> None:
         result = run_calc(2026, 3, 3, 12, "--profile", "xiejibianfang-v1")
@@ -106,8 +105,10 @@ class XiejibianfangRulesTests(unittest.TestCase):
 
         self.assertEqual(result["daily"]["jianchu"], "闭")
         self.assertIn("补垣塞穴", result["decision"]["yi"])
-        self.assertIn("修仓库", result["decision"]["ji"])
-        self.assertIn("破土", result["decision"]["ji"])
+        self.assertIn("筑堤防", result["decision"]["yi"])
+        self.assertNotIn("筑堤防", result["decision"]["ji"])
+        self.assertNotIn("修仓库", result["decision"]["ji"])
+        self.assertNotIn("破土", result["decision"]["ji"])
 
     def test_xiejibianfang_emits_field_level_sources(self) -> None:
         result = run_calc(2026, 3, 6, 12, "--profile", "xiejibianfang-v1")

@@ -75,6 +75,18 @@ class StandardCalendarCoreTests(unittest.TestCase):
         self.assertEqual(before["solar_terms"]["current"], "雨水")
         self.assertEqual(after["solar_terms"]["current"], "惊蛰")
 
+    def test_solar_terms_expose_jie_qi_navigation_like_table(self) -> None:
+        result = run_calc(2026, 3, 6, 12, "--profile", "market-folk-v1")
+
+        self.assertIn("table", result["solar_terms"])
+        self.assertIn("currentJie", result["solar_terms"])
+        self.assertIn("currentQi", result["solar_terms"])
+        self.assertIn("nextJie", result["solar_terms"])
+        self.assertIn("nextQi", result["solar_terms"])
+        self.assertEqual(result["solar_terms"]["currentJie"]["name"], "惊蛰")
+        self.assertEqual(result["solar_terms"]["currentQi"]["name"], "雨水")
+        self.assertEqual(result["solar_terms"]["nextQi"]["name"], "春分")
+
 
 if __name__ == "__main__":
     unittest.main()

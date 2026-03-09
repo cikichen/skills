@@ -13,20 +13,37 @@ from skyfield.api import Loader
 DEFAULT_TIMEZONE = "Asia/Shanghai"
 EPHEMERIS_NAME = "de421.bsp"
 SOLAR_TERM_NAMES = tuple(almanac_east_asia.SOLAR_TERMS_ZHS)
-JIE_BOUNDARY_INDEX_TO_MONTH = {
-    21: 1,
-    23: 2,
-    1: 3,
-    3: 4,
-    5: 5,
-    7: 6,
-    9: 7,
-    11: 8,
-    13: 9,
-    15: 10,
-    17: 11,
-    19: 12,
+JIE_TO_MONTH = {
+    "立春": 1,
+    "惊蛰": 2,
+    "清明": 3,
+    "立夏": 4,
+    "芒种": 5,
+    "小暑": 6,
+    "立秋": 7,
+    "白露": 8,
+    "寒露": 9,
+    "立冬": 10,
+    "大雪": 11,
+    "小寒": 12,
 }
+JIE_NAMES = frozenset(JIE_TO_MONTH.keys())
+QI_NAMES = frozenset(
+    {
+        "雨水",
+        "春分",
+        "谷雨",
+        "小满",
+        "夏至",
+        "大暑",
+        "处暑",
+        "秋分",
+        "霜降",
+        "小雪",
+        "冬至",
+        "大寒",
+    }
+)
 
 
 def _cache_dir() -> Path:
@@ -59,6 +76,29 @@ def _to_local(dt: datetime, timezone_name: str) -> datetime:
 
 def _format_local(dt: datetime) -> str:
     return dt.isoformat(timespec="seconds")
+
+
+def _format_term_event(event: Dict[str, object]) -> Dict[str, object]:
+    return {
+        "name": event["name"],
+        "index": event["index"],
+        "at": _format_local(event["at"]),
+    }
+
+
+def _select_term(events: List[Dict[str, object]], names: frozenset[str], dt: datetime) -> Dict[str, object]:
+    candidates = [event for event in events if event["name"] in names]
+    current = candidates[0]
+    next_event = candidates[-1]
+    for idx, event in enumerate(candidates):
+        if event["at"] <= dt:
+            current = event
+            if idx + 1 < len(candidates):
+                next_event = candidates[idx + 1]
+            continue
+        next_event = event
+        break
+    return {"current": current, "next": next_event}
 
 
 @lru_cache(maxsize=16)
@@ -102,6 +142,14 @@ def get_solar_term_window(dt: datetime, timezone_name: str = DEFAULT_TIMEZONE) -
         next_event = event
         break
 
+    jie_events = _select_term(events, JIE_NAMES, local_dt)
+    qi_events = _select_term(events, QI_NAMES, local_dt)
+    table = {
+        event["name"]: _format_local(event["at"])
+        for event in events
+        if event["at"].year == local_dt.year
+    }
+
     return {
         "current": current_event["name"],
         "currentIndex": current_event["index"],
@@ -109,6 +157,13 @@ def get_solar_term_window(dt: datetime, timezone_name: str = DEFAULT_TIMEZONE) -
         "next": next_event["name"],
         "nextIndex": next_event["index"],
         "nextAt": _format_local(next_event["at"]),
+        "currentJieQi": _format_term_event(current_event),
+        "nextJieQi": _format_term_event(next_event),
+        "currentJie": _format_term_event(jie_events["current"]),
+        "nextJie": _format_term_event(jie_events["next"]),
+        "currentQi": _format_term_event(qi_events["current"]),
+        "nextQi": _format_term_event(qi_events["next"]),
+        "table": table,
         "precision": "astronomical",
         "calculationMode": "skyfield-jpl",
         "timezone": timezone_name,
@@ -117,9 +172,8 @@ def get_solar_term_window(dt: datetime, timezone_name: str = DEFAULT_TIMEZONE) -
 
 
 def get_jieqi_month_for_datetime(dt: datetime, timezone_name: str = DEFAULT_TIMEZONE) -> int:
-    current_index = int(get_solar_term_window(dt, timezone_name)["currentIndex"])
-    boundary_index = current_index if current_index in JIE_BOUNDARY_INDEX_TO_MONTH else (current_index - 1) % 24
-    return JIE_BOUNDARY_INDEX_TO_MONTH[boundary_index]
+    current_jie = get_solar_term_window(dt, timezone_name)["currentJie"]["name"]
+    return JIE_TO_MONTH[current_jie]
 
 
 def get_solar_term_occurrence(year: int, term_name: str, timezone_name: str = DEFAULT_TIMEZONE) -> datetime:

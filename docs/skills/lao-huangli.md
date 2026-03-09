@@ -86,6 +86,7 @@ Current implementation status:
 - `bazi-v1` defaults to `bazi-core`; `--overlay-ruleset` enables hybrid almanac output
 - `provenance` emits `ruleLayer`, `ruleSourceLevel`, `sourceRefs`, and `isHybrid`
 - Solar terms now use `Skyfield + JPL ephemeris`, and emit `currentAt` / `nextAt`
+- `solar_terms` now also includes `table`, `currentJie`, `currentQi`, `nextJie`, and `nextQi`
 - Lunar month sequencing, true new moons, and leap-month determination are still not fully rewritten to complete `GB/T 33661-2017` behavior
 
 Rule provenance constraints:

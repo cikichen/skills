@@ -1,206 +1,206 @@
 ---
 name: python-venv
-description: "Python 环境管理技能。自动检测项目类型和现有环境，按流行度优先级推荐方案。尽量减少用户干扰，只在必要时才询问。"
+description: "Python environment management skill. Automatically detect project type and existing environments, recommend based on popularity. Minimize interruptions, only ask when necessary."
 ---
 
-# Python 环境管理技能
+# Python Environment Management Skill
 
-## 核心原则
+## Core Principles
 
-1. **现有环境优先** - 复用已有的虚拟环境，不重复创建
-2. **项目类型明确时直接使用** - 根据 lock 文件自动选择
-3. **按流行度推荐** - uv > pip > conda > venv
-4. **尽量不打扰用户** - 只有必要时才询问
-
----
-
-## 工具流行度排名
-
-| 优先级 | 工具 | 适用场景 |
-|--------|------|----------|
-| 🥇 | uv | 新项目、快速安装 |
-| 🥈 | pip | 兼容性优先 |
-| 🥉 | conda | 数据科学、特定版本需求 |
-| 4 | venv | 标准库、无需额外安装 |
-| 5 | poetry | 已有 poetry.lock |
-| 6 | pipenv | 已有 Pipfile（逐渐淘汰） |
+1. **Reuse Existing Environments** - Don't recreate, reuse existing virtual environments
+2. **Use Project-Type Decision** - Auto-select based on lock files
+3. **Recommend by Popularity** - uv > pip > conda > venv
+4. **Minimize Interruption** - Only ask when necessary
 
 ---
 
-## 决策流程
+## Tool Popularity Ranking
+
+| Priority | Tool | Best For |
+|----------|------|----------|
+| 🥇 | uv | New projects, fast installs |
+| 🥈 | pip | Compatibility first |
+| 🥉 | conda | Data science, specific versions |
+| 4 | venv | Built-in, no extra install |
+| 5 | poetry | Existing poetry.lock |
+| 6 | pipenv | Existing Pipfile (declining) |
+
+---
+
+## Decision Flow
 
 ```
 ┌─────────────────────────────────────┐
-│  检测项目依赖文件                     │
+│  Detect project dependency files     │
 └─────────────────────────────────────┘
               ↓
     ┌─────────┴─────────┐
     ↓                   ↓
-  明确方案            无法判断
+  Clear decision       Unclear
     ↓                   ↓
-  直接使用         检测现有环境
+  Use directly     Detect existing env
                         ↓
                   ┌─────┴─────┐
                   ↓           ↓
-              有环境        无环境
+              Has env        No env
                   ↓           ↓
-              直接复用      评估复杂度
+              Reuse      Assess complexity
                             ↓
                   ┌─────────┴─────────┐
                   ↓                   ↓
-              简单任务          需安装依赖
+              Simple task       Needs deps
                   ↓                   ↓
-            系统 Python        推荐 uv/conda
+            System Python      Recommend uv/conda
 ```
 
 ---
 
-## 1. 明确方案（直接执行，不询问）
+## 1. Clear Decisions (Execute Directly, No Ask)
 
-检测到以下文件时，直接使用对应工具：
+When these files are detected, use the corresponding tool directly:
 
-| 检测文件 | 直接执行 |
-|---------|----------|
-| `uv.lock` 存在 | `uv sync` 或 `uv pip install -r requirements.txt` |
-| `poetry.lock` 存在 | `poetry install` |
-| `environment.yml` 存在 | `conda env create -f environment.yml` |
-| `Pipfile.lock` 存在 | `pipenv install` |
+| Detected File | Execute |
+|--------------|---------|
+| `uv.lock` exists | `uv sync` or `uv pip install -r requirements.txt` |
+| `poetry.lock` exists | `poetry install` |
+| `environment.yml` exists | `conda env create -f environment.yml` |
+| `Pipfile.lock` exists | `pipenv install` |
 
 ---
 
-## 2. 检测现有环境（复用优先）
+## 2. Detect Existing Environments (Reuse First)
 
 ```bash
-# 优先级：uv venv > conda > venv
+# Priority: uv venv > conda > venv
 
-# 2.1 检测 uv 虚拟环境
+# 2.1 Detect uv virtual environment
 ls -la .venv/ 2>/dev/null && uv pip list 2>/dev/null | head -3
 
-# 2.2 检测 conda 环境
+# 2.2 Detect conda environment
 conda info --envs 2>/dev/null | grep "*" || echo $CONDA_PREFIX
 
-# 2.3 检测标准 venv
+# 2.3 Detect standard venv
 ls -la venv/ .venv/ env/ 2>/dev/null
 
-# 2.4 如果有 → 直接复用（激活后执行命令）
+# 2.4 If exists → Reuse (activate and run commands)
 ```
 
-**复用现有环境示例：**
+**Reuse Example:**
 ```
-检测到现有 .venv/ 目录
-→ 激活: source .venv/bin/activate
-→ 执行: uv pip install <package>
+Detected existing .venv/ directory
+→ Activate: source .venv/bin/activate
+→ Run: uv pip install <package>
 ```
 
 ---
 
-## 3. 无法判断时（评估复杂度）
+## 3. When Unclear (Assess Complexity)
 
-| 场景 | 处理方式 |
-|------|----------|
-| 纯标准库、无第三方依赖 | 系统 Python（python3） |
-| 简单 pip install 测试 | 系统 Python（临时） |
-| 有 requirements.txt | 推荐 uv > pip > venv |
-| 有 pyproject.toml | 推荐 uv > pip |
-| 多文件项目、需要隔离 | 推荐 uv |
-
----
-
-## 4. 何时询问用户（仅限这些情况）
-
-✅ **要问：**
-1. 空项目 + 首次安装依赖 → 问用哪个工具
-2. 同时存在 requirements.txt + pyproject.toml → 问用哪个
-3. 用户明确要求换方案 → 如"我想用 conda"
-
-❌ **不要问：**
-- 已有 uv.lock 但用户没指定
-- 已有 .venv/ 目录
-- 普通 pip install 任务
+| Scenario | Action |
+|----------|--------|
+| Stdlib only, no 3rd party | System Python (python3) |
+| Simple pip install test | System Python (temp) |
+| Has requirements.txt | Recommend uv > pip > venv |
+| Has pyproject.toml | Recommend uv > pip |
+| Multi-file project, needs isolation | Recommend uv |
 
 ---
 
-## 5. 推荐方案（无明确指示时）
+## 4. When to Ask User (Only These Cases)
+
+✅ **Ask:**
+1. Empty project + first dependency install → Ask which tool
+2. Both requirements.txt + pyproject.toml → Ask which to use
+3. User explicitly wants different tool → e.g., "I want conda"
+
+❌ **Don't Ask:**
+- Has uv.lock but user didn't specify
+- Has .venv/ directory
+- Regular pip install task
+
+---
+
+## 5. Recommended Tool (No Clear Directive)
 
 ```
-首选: uv
-  ├── uv venv (创建)
-  ├── uv pip install (安装)
-  └── uv sync (同步)
+First: uv
+  ├── uv venv (create)
+  ├── uv pip install (install)
+  └── uv sync (sync)
 
-备选: pip
+Backup: pip
   ├── python3 -m venv .venv
   └── pip install
 
-特殊: conda
+Special: conda
   ├── conda create -n envname python=x.x
   └── conda env create
 ```
 
 ---
 
-## 检测命令速查
+## Detection Commands
 
 ```bash
-# 检测可用工具
+# Check available tools
 which uv
 which conda
 which pip
 which python3
 
-# 检测项目文件
+# Check project files
 ls -la *.lock pyproject.toml requirements.txt environment.yml Pipfile 2>/dev/null
 
-# 检测现有环境
+# Check existing environments
 ls -la .venv/ venv/ env/ 2>/dev/null
 conda info --envs 2>/dev/null
 
-# 检测当前环境
+# Check current environment
 echo $VIRTUAL_ENV
 echo $CONDA_PREFIX
 ```
 
 ---
 
-## 交互提示示例（仅必要时）
+## Interaction Examples (Only When Needed)
 
 ```
-🔍 检测结果：
-- 项目文件: pyproject.toml
-- 现有环境: 无
-- 推荐方案: uv (最快)
+🔍 Detection result:
+- Project file: pyproject.toml
+- Existing env: None
+- Recommended: uv (fastest)
 
-直接执行: uv pip install <package>
+Running: uv pip install <package>
 ```
 
 ```
-🔍 检测结果：
-- 项目文件: requirements.txt
-- 现有环境: 无
-- 推荐方案: uv
+🔍 Detection result:
+- Project file: requirements.txt
+- Existing env: None
+- Recommended: uv
 
-可选方案：
-1) uv (推荐) - 更快
-2) pip - 兼容性更好
-3) venv - 使用标准库
-4) conda - 如果需要特定版本
+Available options:
+1) uv (recommended) - faster
+2) pip - better compatibility
+3) venv - uses stdlib
+4) conda - if specific version needed
 
-请输入选项或直接回车使用推荐方案：
+Enter option or press Enter to use recommended:
 ```
 
 ---
 
-## 快速命令参考
+## Quick Command Reference
 
-| 操作 | uv | pip | conda | venv |
-|------|-----|-----|------|------|
-| 创建环境 | `uv venv` | - | `conda create` | `python3 -m venv` |
-| 安装包 | `uv pip install` | `pip install` | `conda install` | `pip install` |
-| 安装依赖 | `uv sync` | `pip install -r` | `conda env create` | `pip install -r` |
-| 激活 | (自动) | (自动) | `conda activate` | `source venv/bin/activate` |
+| Action | uv | pip | conda | venv |
+|--------|-----|-----|-------|------|
+| Create env | `uv venv` | - | `conda create` | `python3 -m venv` |
+| Install pkg | `uv pip install` | `pip install` | `conda install` | `pip install` |
+| Install deps | `uv sync` | `pip install -r` | `conda env create` | `pip install -r` |
+| Activate | (auto) | (auto) | `conda activate` | `source venv/bin/activate` |
 
 ---
 
-## 核心原则
+## Core Principle
 
-**"少问多做"** - 能判断的直接执行，只在无法判断时询问。
+**"Do more, ask less"** - Execute directly when you can determine, only ask when truly unclear.
